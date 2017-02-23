@@ -26,3 +26,6 @@ battlecode-scaffold.iws
 .classpath
 .project
 .settings/
+
+# Other players
+/others
