@@ -37,6 +37,25 @@ abstract class Robot {
     }
 
     /**
+     * Default behaviour is to shake trees
+     */
+    void defaultMovement(Awareness awareness) throws GameActionException {
+        TreeInfo tree = awareness.findNearestTreeWithBullets();
+        if (tree != null) {
+            if (rc.canInteractWithTree(tree.getID())) {
+                rc.shake(tree.getID());
+                return;
+            } else {
+                if (rc.canMove(tree.getLocation())) {
+                    rc.move(tree.getLocation());
+                    return;
+                }
+            }
+        }
+        randomMovement();
+    }
+
+    /**
      * Sensable opponents
      *
      * @deprecated

@@ -46,19 +46,7 @@ public class Archon extends Robot {
     private class Roamer implements ArchonState {
         @Override
         public ArchonState act(Awareness awareness) throws GameActionException {
-            TreeInfo tree = awareness.findNearestTreeWithBullets();
-            if (tree != null) {
-                if (rc.canInteractWithTree(tree.getID())) {
-                    rc.shake(tree.getID());
-                    return this;
-                } else {
-                    if (rc.canMove(tree.getLocation())) {
-                        rc.move(tree.getLocation());
-                        return this;
-                    }
-                }
-            }
-            randomMovement();
+            defaultMovement(awareness);
             return this;
         }
     }

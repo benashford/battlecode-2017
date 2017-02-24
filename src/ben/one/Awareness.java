@@ -35,6 +35,18 @@ public class Awareness {
         return null;
     }
 
+    public List<TreeInfo> findTeamTrees() {
+        Team myTeam = rc.getTeam();
+        TreeInfo[] trees = findTrees();
+        List<TreeInfo> teamTrees = new ArrayList<>(trees.length);
+        for (TreeInfo tree : trees) {
+            if (tree.getTeam() == myTeam) {
+                teamTrees.add(tree);
+            }
+        }
+        return teamTrees;
+    }
+
     public BulletInfo[] findBullets() {
         if (bullets == null) {
             bullets = rc.senseNearbyBullets();
@@ -75,6 +87,8 @@ public class Awareness {
     public boolean isDanger() {
         return isBullets() || isEnemy();
     }
+
+    // DEBUG
 
     private void debug_tree(TreeInfo tree) {
         rc.setIndicatorDot(tree.getLocation(), 255, 127, 127);
