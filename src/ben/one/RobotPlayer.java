@@ -2,6 +2,9 @@ package ben.one;
 
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
+import ben.one.robots.Archon;
+import ben.one.robots.Gardener;
+import ben.one.robots.Soldier;
 
 public strictfp class RobotPlayer {
     public static void run(RobotController rc) throws GameActionException {
