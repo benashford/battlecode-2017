@@ -20,6 +20,11 @@ public class Archon extends Robot {
         }
     }
 
+    @Override
+    float getRadius() {
+        return RobotType.ARCHON.bodyRadius;
+    }
+
     private class HireGardeners implements ArchonState {
         private int gardenersToHire;
 
@@ -43,6 +48,7 @@ public class Archon extends Robot {
         }
     }
 
+    // TODO - probably disable this
     private class Roamer implements ArchonState {
         @Override
         public ArchonState act(Awareness awareness) throws GameActionException {

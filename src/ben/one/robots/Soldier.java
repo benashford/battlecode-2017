@@ -2,7 +2,11 @@ package ben.one.robots;
 
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import ben.one.Awareness;
+
+import java.util.List;
 
 public class Soldier extends Robot {
     private SoldierState state = new Roam();
@@ -12,8 +16,31 @@ public class Soldier extends Robot {
     }
 
     void doTurn(Awareness awareness) throws GameActionException {
-        // TODO: defensiveness/state switching
-        state = state.act(awareness);
+        if (awareness.isBullets()) {
+            evadeBullets(awareness);
+            resetState();
+        }
+        if (awareness.isEnemy()) {
+            moveAndFire(awareness);
+            resetState();
+        }
+        if (!awareness.isDanger()) {
+            state = state.act(awareness);
+        }
+    }
+
+    @Override
+    float getRadius() {
+        return RobotType.SOLDIER.bodyRadius;
+    }
+
+    private void resetState() {
+        state = new Roam();
+    }
+
+    private void moveAndFire(Awareness awareness) {
+        List<RobotInfo> enemy = awareness.findEnemy();
+        debug_outf("Found: %d enemy", enemy.size());
     }
 
     private class Roam implements SoldierState {
