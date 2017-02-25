@@ -47,10 +47,17 @@ public class Archon extends Robot {
 
     // TODO - probably disable this
     private class Roamer implements ArchonState {
+        private int turnCount = 0;
+
         @Override
         public ArchonState act(Awareness awareness) throws GameActionException {
             defaultMovement(awareness);
-            return this;
+            turnCount++;
+            if (turnCount < (rc.getRoundNum() / 2)) {
+                return this;
+            } else {
+                return new HireGardeners(1);
+            }
         }
     }
 }
