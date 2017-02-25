@@ -3,20 +3,11 @@ package ben.one.robots;
 import battlecode.common.*;
 import ben.one.Awareness;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 abstract class Robot {
     RobotController rc;
-    private Team team;
-    private Team enemy;
 
     Robot(RobotController rc) {
         this.rc = rc;
-        this.team = rc.getTeam();
-        this.enemy = this.team.opponent();
     }
 
     abstract void doTurn(Awareness awareness) throws GameActionException;
@@ -62,12 +53,13 @@ abstract class Robot {
         randomMovement();
     }
 
-    abstract float getRadius();
-
     void evadeBullets(Awareness awareness) throws GameActionException {
         BulletInfo[] bullets = awareness.findBullets();
         MapLocation myLocation = rc.getLocation();
-        float radius = getRadius();
+        RobotType type = rc.getType();
+        float radius = type.bodyRadius;
+        float bulletSenseRadius = type.bulletSightRadius;
+        float strideRadius = type.strideRadius;
         float nextX = myLocation.x;
         float nextY = myLocation.y;
         for (BulletInfo bullet : bullets) {
@@ -76,7 +68,6 @@ abstract class Robot {
             Direction bulletDir = bullet.getDir();
             float angle = dirToMe.degreesBetween(bulletDir);
             if (Math.abs(angle) >= 1f) {
-                debug_outf("Bullet: %s, will miss by miles", bullet);
                 continue;
             }
             float distance = myLocation.distanceTo(bulletLoc);
@@ -84,18 +75,19 @@ abstract class Robot {
 
             if (Math.abs(missBy) < radius + bullet.getRadius()) {
                 debug_outf("Bullet %s, will hit, distance: %.2f", bullet, missBy);
-                float escapeAngle = 2f;
+                float bulletSpeed = bullet.getSpeed();
+                float distanceNextTurn = Math.max(0, distance - bulletSpeed);
+                float escapeAngle = (float)((Math.PI / 2.0) + ((distanceNextTurn / bulletSenseRadius) * (Math.PI / 4.0)));
+                float angleModifier = 1f;
                 if (angle < 0) {
-                    escapeAngle = -2f;
+                    angleModifier = -1f;
                 }
-                MapLocation target = myLocation.add(bulletDir.rotateLeftRads(escapeAngle), radius * bullet.getDamage());
+                MapLocation target = myLocation.add(bulletDir.rotateLeftRads(escapeAngle * angleModifier), radius * bullet.getDamage());
                 float diffX = nextX - target.x;
                 float diffY = nextY - target.y;
                 nextX += diffX;
                 nextY += diffY;
-                rc.setIndicatorLine(myLocation, myLocation.add(dirToMe.rotateLeftDegrees(90f), radius), 0, 255, 127);
-            } else {
-                debug_outf("Bullet %s, will miss, distance: %.2f", bullet, missBy);
+                rc.setIndicatorLine(myLocation, myLocation.add(dirToMe.rotateLeftDegrees(90f * angleModifier), radius), 0, 255, 127);
             }
         }
         MapLocation target = new MapLocation(nextX, nextY);

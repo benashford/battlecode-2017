@@ -24,11 +24,6 @@ public class Gardener extends Robot {
         }
     }
 
-    @Override
-    float getRadius() {
-        return RobotType.GARDENER.bodyRadius;
-    }
-
     private void plantRandomTree() throws GameActionException {
         Direction d = randomDirection();
         if (rc.canPlantTree(d)) {

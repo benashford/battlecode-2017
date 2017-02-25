@@ -32,11 +32,6 @@ public class Soldier extends Robot {
         }
     }
 
-    @Override
-    float getRadius() {
-        return RobotType.SOLDIER.bodyRadius;
-    }
-
     private void resetState() {
         state = new Roam();
     }

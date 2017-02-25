@@ -22,11 +22,6 @@ public class Archon extends Robot {
         }
     }
 
-    @Override
-    float getRadius() {
-        return RobotType.ARCHON.bodyRadius;
-    }
-
     private class HireGardeners implements ArchonState {
         private int gardenersToHire;
 
