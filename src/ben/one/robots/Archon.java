@@ -13,7 +13,9 @@ public class Archon extends Robot {
     }
 
     void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isDanger()) {
+        if (awareness.isBullets()) {
+            evadeBullets(awareness);
+        } else if (awareness.isEnemy()) {
             randomMovement();
         } else {
             state = state.act(awareness);

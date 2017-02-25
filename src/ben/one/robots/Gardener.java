@@ -16,8 +16,13 @@ public class Gardener extends Robot {
     }
 
     void doTurn(Awareness awareness) throws GameActionException {
-        // TODO: implement defensiveness
-        state = state.act(awareness);
+        if (awareness.isBullets()) {
+            evadeBullets(awareness);
+        } else if (awareness.isEnemy()) {
+            randomMovement();
+        } else {
+            state = state.act(awareness);
+        }
     }
 
     @Override

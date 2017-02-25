@@ -19,7 +19,6 @@ public class Soldier extends Robot {
         if (awareness.isBullets()) {
             evadeBullets(awareness);
             resetState();
-            randomMovement(); // TODO - remove
         }
         if (awareness.isEnemy()) {
             moveAndFire(awareness);

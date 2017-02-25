@@ -64,10 +64,12 @@ abstract class Robot {
 
     abstract float getRadius();
 
-    void evadeBullets(Awareness awareness) {
+    void evadeBullets(Awareness awareness) throws GameActionException {
         BulletInfo[] bullets = awareness.findBullets();
         MapLocation myLocation = rc.getLocation();
         float radius = getRadius();
+        float nextX = myLocation.x;
+        float nextY = myLocation.y;
         for (BulletInfo bullet : bullets) {
             MapLocation bulletLoc = bullet.getLocation();
             Direction dirToMe = bulletLoc.directionTo(myLocation);
@@ -82,10 +84,24 @@ abstract class Robot {
 
             if (Math.abs(missBy) < radius + bullet.getRadius()) {
                 debug_outf("Bullet %s, will hit, distance: %.2f", bullet, missBy);
+                float escapeAngle = 2f;
+                if (angle < 0) {
+                    escapeAngle = -2f;
+                }
+                MapLocation target = myLocation.add(bulletDir.rotateLeftRads(escapeAngle), radius * bullet.getDamage());
+                float diffX = nextX - target.x;
+                float diffY = nextY - target.y;
+                nextX += diffX;
+                nextY += diffY;
                 rc.setIndicatorLine(myLocation, myLocation.add(dirToMe.rotateLeftDegrees(90f), radius), 0, 255, 127);
             } else {
                 debug_outf("Bullet %s, will miss, distance: %.2f", bullet, missBy);
             }
+        }
+        MapLocation target = new MapLocation(nextX, nextY);
+        rc.setIndicatorLine(myLocation, target, 70, 100, 255);
+        if (rc.canMove(target)) {
+            rc.move(target);
         }
     }
 
