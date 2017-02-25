@@ -12,11 +12,11 @@ public class Soldier extends Robot {
 
     static {
         ATTRACTIONS.put(RobotType.ARCHON, 100f);
-        ATTRACTIONS.put(RobotType.SOLDIER, 10f);
+        ATTRACTIONS.put(RobotType.SOLDIER, 0f);
         ATTRACTIONS.put(RobotType.GARDENER, 50f);
         ATTRACTIONS.put(RobotType.LUMBERJACK, -10f);
-        ATTRACTIONS.put(RobotType.SCOUT, 0f);
-        ATTRACTIONS.put(RobotType.TANK, -20f);
+        ATTRACTIONS.put(RobotType.SCOUT, 100f);
+        ATTRACTIONS.put(RobotType.TANK, -50f);
     }
 
     private SoldierState state = new Roam();
@@ -46,7 +46,8 @@ public class Soldier extends Robot {
     private float calculateAttractionFactor(RobotInfo enemyBot) {
         // Attraction is a function of unit type and health
         float baseAttraction = ATTRACTIONS.get(enemyBot.getType());
-        float health = enemyBot.getHealth() * 10;
+        float enemyHealth = enemyBot.getHealth() / enemyBot.getType().maxHealth;
+        float health = (1 - enemyHealth) * 10;
         return baseAttraction + health;
     }
 
@@ -75,7 +76,7 @@ public class Soldier extends Robot {
         rc.setIndicatorLine(pos, target, 0, 100, 255);
 
         Direction targetDir = pos.directionTo(target);
-        if (rc.canMove(targetDir)) {
+        if (targetDir != null && rc.canMove(targetDir)) {
             rc.move(targetDir);
         }
     }
