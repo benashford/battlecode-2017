@@ -4,7 +4,6 @@ import battlecode.common.*;
 import ben.one.Awareness;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Gardener extends Robot {
     private static final int NUM_TREES = 3;
@@ -50,37 +49,37 @@ public class Gardener extends Robot {
             if (trees.isEmpty()) {
                 plantRandomTree();
                 randomMovement();
-            }
-            Optional<TreeInfo> poorestTree = trees.stream().min((t1, t2) -> {
-                float h1 = t1.getHealth() / t1.getMaxHealth();
-                float h2 = t2.getHealth() / t2.getMaxHealth();
-
-                if (h1 < h2) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            });
-            if (poorestTree.isPresent()) {
-                TreeInfo pt = poorestTree.get();
-                int poorestTreeId = pt.getID();
-                if (rc.canInteractWithTree(poorestTreeId)) {
-                    if (rc.canWater(poorestTreeId)) {
-                        rc.water(poorestTreeId);
-                    }
-                } else {
-                    MapLocation poorestTreeLocation = pt.getLocation();
-                    if (rc.canMove(poorestTreeLocation)) {
-                        rc.move(poorestTreeLocation);
-                    }
-                }
-            }
-            Direction d = randomDirection();
-            if (trees.size() < numTrees) {
-                if (rc.canPlantTree(d)) {
-                    rc.plantTree(d);
-                }
             } else {
+                TreeInfo poorestTree = trees.get(0);
+                float poorestTreeHealth = poorestTree.getHealth() / poorestTree.getMaxHealth();
+                int numOfNearbyTrees = trees.size();
+                for (int i = 1; i < numOfNearbyTrees; i++) {
+                    TreeInfo tree = trees.get(i);
+                    float treeHealth = tree.getHealth() / tree.getMaxHealth();
+                    if (treeHealth < poorestTreeHealth) {
+                        poorestTree = tree;
+                        poorestTreeHealth = treeHealth;
+                    }
+                }
+                if (poorestTreeHealth < 0.75f) {
+                    int poorestTreeId = poorestTree.getID();
+                    if (rc.canInteractWithTree(poorestTreeId)) {
+                        if (rc.canWater(poorestTreeId)) {
+                            rc.water(poorestTreeId);
+                        }
+                    } else {
+                        MapLocation poorestTreeLocation = poorestTree.getLocation();
+                        if (rc.canMove(poorestTreeLocation)) {
+                            rc.move(poorestTreeLocation);
+                        }
+                    }
+                }
+            }
+
+            if (trees.size() < numTrees) {
+                plantRandomTree();
+            } else {
+                Direction d = randomDirection();
                 if (rc.canBuildRobot(RobotType.SOLDIER, d)) {
                     rc.buildRobot(RobotType.SOLDIER, d);
                 }

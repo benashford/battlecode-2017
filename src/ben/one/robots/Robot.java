@@ -102,6 +102,8 @@ abstract class Robot {
         rc.setIndicatorLine(myLocation, target, 70, 100, 255);
         if (rc.canMove(target)) {
             rc.move(target);
+        } else {
+            randomMovement();
         }
     }
 
