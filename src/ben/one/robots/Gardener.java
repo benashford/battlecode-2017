@@ -16,7 +16,7 @@ public class Gardener extends Robot {
 
     public Gardener(RobotController rc) {
         super(rc);
-        buildStack.add(RobotType.LUMBERJACK);
+        //buildStack.add(RobotType.LUMBERJACK);
     }
 
     void doTurn(Awareness awareness) throws GameActionException {

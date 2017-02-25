@@ -58,11 +58,17 @@ public class Soldier extends Robot {
         float nextX = pos.x;
         float nextY = pos.y;
 
+        float bodyRadius = rc.getType().bodyRadius;
+
         List<RobotInfo> enemy = awareness.findEnemy();
         for (RobotInfo enemyBot : enemy) {
             MapLocation enemyPos = enemyBot.getLocation();
+            float distance = pos.distanceTo(enemyPos);
+            float closeEnough = (bodyRadius * 1.5f) + enemyBot.getRadius();
+
             Direction dir = pos.directionTo(enemyPos);
-            float attractionFactor = calculateAttractionFactor(enemyBot);
+            float attractionFactor = calculateAttractionFactor(enemyBot) * (distance - closeEnough);
+
             MapLocation targetPos = pos.add(dir, attractionFactor);
 
             rc.setIndicatorLine(pos, targetPos, 0, 255, 100);
