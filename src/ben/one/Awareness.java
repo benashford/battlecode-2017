@@ -91,6 +91,6 @@ public class Awareness {
     // DEBUG
 
     private void debug_tree(TreeInfo tree) {
-        rc.setIndicatorDot(tree.getLocation(), 255, 127, 127);
+        rc.setIndicatorDot(tree.getLocation(), 255, 255, 255);
     }
 }
