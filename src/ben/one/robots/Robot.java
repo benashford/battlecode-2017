@@ -62,43 +62,36 @@ abstract class Robot {
         randomMovement();
     }
 
-    private boolean onTarget(MapLocation me, float radius, BulletInfo bullet) {
-        MapLocation bulletLoc = bullet.getLocation();
-        Direction dirToMe = me.directionTo(bulletLoc).opposite();
-        Direction bulletDir = bullet.getDir();
-        float angle = Math.abs(dirToMe.degreesBetween(bulletDir));
-
-        if (angle >= 1f) {
-            return false;
-        }
-
-        float distance = me.distanceTo(bulletLoc);
-        float missBy = distance * (float)Math.tan(angle);
-
-        rc.setIndicatorLine(me, me.add(dirToMe.rotateLeftDegrees(90f), missBy), 0, 255, 127);
-        rc.setIndicatorLine(me, me.add(dirToMe.rotateRightDegrees(90f), missBy), 0, 255, 127);
-
-        return missBy < radius + bullet.getRadius();
-    }
-
     abstract float getRadius();
 
     void evadeBullets(Awareness awareness) {
         BulletInfo[] bullets = awareness.findBullets();
         MapLocation myLocation = rc.getLocation();
         float radius = getRadius();
-        List<BulletInfo> dangerousBullets = new ArrayList<>(bullets.length);
         for (BulletInfo bullet : bullets) {
-            if (onTarget(myLocation, radius, bullet)) {
-                dangerousBullets.add(bullet);
+            MapLocation bulletLoc = bullet.getLocation();
+            Direction dirToMe = bulletLoc.directionTo(myLocation);
+            Direction bulletDir = bullet.getDir();
+            float angle = dirToMe.degreesBetween(bulletDir);
+            if (Math.abs(angle) >= 1f) {
+                debug_outf("Bullet: %s, will miss by miles", bullet);
+                continue;
+            }
+            float distance = myLocation.distanceTo(bulletLoc);
+            float missBy = distance * (float)Math.tan(angle);
+
+            if (Math.abs(missBy) < radius + bullet.getRadius()) {
+                debug_outf("Bullet %s, will hit, distance: %.2f", bullet, missBy);
+                rc.setIndicatorLine(myLocation, myLocation.add(dirToMe.rotateLeftDegrees(90f), radius), 0, 255, 127);
+            } else {
+                debug_outf("Bullet %s, will miss, distance: %.2f", bullet, missBy);
             }
         }
-        debug_outf("Found: %d bullets", dangerousBullets.size());
     }
 
     // DEBUG
 
     void debug_outf(String pattern, Object... args) {
-        System.out.printf("%s%n", rc.getID(), String.format(pattern, args));
+        System.out.printf("%s%n", String.format(pattern, args));
     }
 }
