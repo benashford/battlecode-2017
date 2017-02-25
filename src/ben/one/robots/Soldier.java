@@ -3,9 +3,22 @@ package ben.one.robots;
 import battlecode.common.*;
 import ben.one.Awareness;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Soldier extends Robot {
+    private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
+
+    static {
+        ATTRACTIONS.put(RobotType.ARCHON, 100f);
+        ATTRACTIONS.put(RobotType.SOLDIER, 10f);
+        ATTRACTIONS.put(RobotType.GARDENER, 50f);
+        ATTRACTIONS.put(RobotType.LUMBERJACK, -10f);
+        ATTRACTIONS.put(RobotType.SCOUT, 0f);
+        ATTRACTIONS.put(RobotType.TANK, -20f);
+    }
+
     private SoldierState state = new Roam();
 
     public Soldier(RobotController rc) {
@@ -20,9 +33,6 @@ public class Soldier extends Robot {
         if (awareness.isEnemy()) {
             moveAndFire(awareness);
             resetState();
-            if (!rc.hasMoved()) { // TODO - remove
-                randomMovement(); // TODO - remove
-            }
         }
         if (!awareness.isDanger()) {
             state = state.act(awareness);
@@ -34,8 +44,10 @@ public class Soldier extends Robot {
     }
 
     private float calculateAttractionFactor(RobotInfo enemyBot) {
-        // TODO: implement me
-        return 1.0f;
+        // Attraction is a function of unit type and health
+        float baseAttraction = ATTRACTIONS.get(enemyBot.getType());
+        float health = enemyBot.getHealth() * 10;
+        return baseAttraction + health;
     }
 
     private void moveAroundEnemy(Awareness awareness) throws GameActionException {
@@ -88,7 +100,9 @@ public class Soldier extends Robot {
     private class Roam implements SoldierState {
         @Override
         public SoldierState act(Awareness awareness) throws GameActionException {
-            defaultMovement(awareness);
+            if (!rc.hasMoved()) {
+                defaultMovement(awareness);
+            }
             return this;
         }
     }
