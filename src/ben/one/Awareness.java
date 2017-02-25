@@ -28,11 +28,31 @@ public class Awareness {
         TreeInfo[] trees = findTrees();
         for (TreeInfo tree : trees) {
             if (tree.getContainedBullets() > 0) {
-                debug_tree(tree);
+                debug_tree(tree, 255);
                 return tree;
             }
         }
         return null;
+    }
+
+    public TreeInfo findNearestTreeWithRobot() {
+        TreeInfo[] trees = findTrees();
+        for (TreeInfo tree : trees) {
+            if (tree.getContainedRobot() != null) {
+                debug_tree(tree, 127);
+                return tree;
+            }
+        }
+        return null;
+    }
+
+    public TreeInfo findNearestTree() {
+        TreeInfo[] trees = findTrees();
+        if (trees.length > 0) {
+            return trees[0];
+        } else {
+            return null;
+        }
     }
 
     public List<TreeInfo> findTeamTrees() {
@@ -90,7 +110,7 @@ public class Awareness {
 
     // DEBUG
 
-    private void debug_tree(TreeInfo tree) {
-        rc.setIndicatorDot(tree.getLocation(), 255, 255, 255);
+    private void debug_tree(TreeInfo tree, int intensity) {
+        rc.setIndicatorDot(tree.getLocation(), intensity, intensity, intensity);
     }
 }

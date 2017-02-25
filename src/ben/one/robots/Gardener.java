@@ -3,6 +3,8 @@ package ben.one.robots;
 import battlecode.common.*;
 import ben.one.Awareness;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 public class Gardener extends Robot {
@@ -10,14 +12,18 @@ public class Gardener extends Robot {
 
     private GardenerState state = new Garden(NUM_TREES);
 
+    private Deque<RobotType> buildStack = new ArrayDeque<>();
+
     public Gardener(RobotController rc) {
         super(rc);
+        buildStack.add(RobotType.LUMBERJACK);
     }
 
     void doTurn(Awareness awareness) throws GameActionException {
         if (awareness.isBullets()) {
             evadeBullets(awareness);
         } else if (awareness.isEnemy()) {
+            // TODO: replace with runAway();
             randomMovement();
         } else {
             state = state.act(awareness);
@@ -31,6 +37,25 @@ public class Gardener extends Robot {
         }
     }
 
+    private RobotType nextBuildType() {
+        if (buildStack.isEmpty()) {
+            return RobotType.SOLDIER;
+        } else {
+            return buildStack.peekLast();
+        }
+    }
+
+    private void build() throws GameActionException {
+        Direction d = randomDirection();
+        RobotType type = nextBuildType();
+        if (rc.canBuildRobot(type, d)) {
+            rc.buildRobot(type, d);
+            if (!buildStack.isEmpty()) {
+                buildStack.removeLast();
+            }
+        }
+    }
+
     private class Garden implements GardenerState {
         private int numTrees;
 
@@ -41,10 +66,8 @@ public class Gardener extends Robot {
         @Override
         public GardenerState act(Awareness awareness) throws GameActionException {
             List<TreeInfo> trees = awareness.findTeamTrees();
-            if (trees.isEmpty()) {
-                plantRandomTree();
-                randomMovement();
-            } else {
+
+            if (!trees.isEmpty()) {
                 TreeInfo poorestTree = trees.get(0);
                 float poorestTreeHealth = poorestTree.getHealth() / poorestTree.getMaxHealth();
                 int numOfNearbyTrees = trees.size();
@@ -74,10 +97,7 @@ public class Gardener extends Robot {
             if (trees.size() < numTrees) {
                 plantRandomTree();
             } else {
-                Direction d = randomDirection();
-                if (rc.canBuildRobot(RobotType.SOLDIER, d)) {
-                    rc.buildRobot(RobotType.SOLDIER, d);
-                }
+                build();
             }
             if (!rc.hasMoved()) {
                 randomMovement();
