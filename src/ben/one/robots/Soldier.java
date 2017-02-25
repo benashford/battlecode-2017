@@ -91,8 +91,8 @@ public class Soldier extends Robot {
         // TODO: real implementation
         RobotInfo enemyBot = awareness.findEnemy().get(0);
         MapLocation enemyPos = enemyBot.getLocation();
-        if (rc.canFireSingleShot()) {
-            rc.fireSingleShot(rc.getLocation().directionTo(enemyPos));
+        if (rc.canFirePentadShot()) {
+            rc.firePentadShot(rc.getLocation().directionTo(enemyPos));
         }
     }
 
