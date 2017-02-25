@@ -53,7 +53,7 @@ public class Archon extends Robot {
         public ArchonState act(Awareness awareness) throws GameActionException {
             defaultMovement(awareness);
             turnCount++;
-            if (turnCount < (rc.getRoundNum() / 2)) {
+            if (turnCount < ((rc.getRoundNum() * 2) / 2)) {
                 return this;
             } else {
                 return new HireGardeners(1);
