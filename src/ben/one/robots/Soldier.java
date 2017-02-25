@@ -54,8 +54,8 @@ public class Soldier extends Robot {
 
             rc.setIndicatorLine(pos, targetPos, 0, 255, 100);
 
-            nextX += targetPos.x;
-            nextY += targetPos.y;
+            nextX -= pos.x - targetPos.x;
+            nextY -= pos.y - targetPos.y;
         }
 
         MapLocation target = new MapLocation(nextX, nextY);
@@ -64,7 +64,7 @@ public class Soldier extends Robot {
 
         Direction targetDir = pos.directionTo(target);
         if (rc.canMove(targetDir)) {
-            rc.move(target);
+            rc.move(targetDir);
         }
     }
 

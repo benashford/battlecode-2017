@@ -59,7 +59,6 @@ abstract class Robot {
         RobotType type = rc.getType();
         float radius = type.bodyRadius;
         float bulletSenseRadius = type.bulletSightRadius;
-        float strideRadius = type.strideRadius;
         float nextX = myLocation.x;
         float nextY = myLocation.y;
         for (BulletInfo bullet : bullets) {
@@ -92,10 +91,9 @@ abstract class Robot {
         }
         MapLocation target = new MapLocation(nextX, nextY);
         rc.setIndicatorLine(myLocation, target, 70, 100, 255);
-        if (rc.canMove(target)) {
-            rc.move(target);
-        } else {
-            randomMovement();
+        Direction d = myLocation.directionTo(target);
+        if (myLocation.distanceTo(target) > 0.2f && rc.canMove(d)) {
+            rc.move(d);
         }
     }
 
