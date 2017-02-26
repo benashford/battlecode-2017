@@ -2,6 +2,7 @@ package ben.one.comms;
 
 import battlecode.common.GameActionException;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static ben.one.Util.debug_outf;
@@ -24,7 +25,11 @@ public class ArchonMessageBroker {
             return;
         }
 
-        LocationBasedMsg message = (LocationBasedMsg) newMessages.iterator().next();
-        orders.broadcastMessage(message.makeDescendMsg());
+        Iterator<Message> iter = newMessages.iterator();
+        int numMessages = Math.min(newMessages.size(), 10);
+        for (int i = 0; i < numMessages; i++) {
+            LocationBasedMsg message = (LocationBasedMsg)iter.next();
+            orders.broadcastMessage(message.makeDescendMsg());
+        }
     }
 }

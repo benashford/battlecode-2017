@@ -24,11 +24,6 @@ abstract class ShootingRobot extends AggressiveRobot {
             resetState();
         }
         if (!awareness.isDanger()) {
-            MapLocation order = listenForOrders();
-            if (order != null) {
-                debug_outf("RECEIVED ORDER! %s", order);
-                state = new MoveTo(order);
-            }
             state = state.act(awareness);
         }
     }
@@ -91,7 +86,13 @@ abstract class ShootingRobot extends AggressiveRobot {
             if (!rc.hasMoved()) {
                 defaultMovement(awareness);
             }
-            return this;
+            MapLocation order = listenForOrders();
+            if (order != null) {
+                debug_outf("RECEIVED ORDER! %s", order);
+                return new MoveTo(order);
+            } else {
+                return this;
+            }
         }
     }
 

@@ -6,9 +6,9 @@ import ben.one.comms.ShipToShore;
 import ben.one.comms.ShoreToShip;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static ben.one.Util.debug_outf;
 
@@ -25,10 +25,13 @@ abstract class Robot {
     ShipToShore radio;
     ShoreToShip orders;
 
+    private Random rand;
+
     Robot(RobotController rc) {
         this.rc = rc;
         radio = new ShipToShore(rc);
         orders = new ShoreToShip(rc);
+        rand = new Random();
     }
 
     abstract void doTurn(Awareness awareness) throws GameActionException;
@@ -156,11 +159,12 @@ abstract class Robot {
 
     MapLocation listenForOrders() throws GameActionException {
         List<MapLocation> pendingOrders = orders.readOrders();
-        if (pendingOrders.isEmpty()) {
-            return null;
+        int numOrders = pendingOrders.size();
+        if (numOrders > 0) {
+            int idx = rand.nextInt(numOrders);
+            return pendingOrders.get(idx);
         } else {
-            // TODO: real implementation
-            return pendingOrders.get(pendingOrders.size() - 1);
+            return null;
         }
     }
 }

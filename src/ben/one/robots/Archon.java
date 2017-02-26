@@ -5,6 +5,7 @@ import ben.one.Awareness;
 import ben.one.comms.ArchonMessageBroker;
 
 public class Archon extends PassiveRobot {
+    private static final int START_BUYING_VICTORY_POINTS = 1000;
     private static final int DEFAULT_GARDENERS = 2;
 
     private ArchonMessageBroker broker;
@@ -19,6 +20,13 @@ public class Archon extends PassiveRobot {
     void doTurn(Awareness awareness) throws GameActionException {
         super.doTurn(awareness);
         broker.brokerMessages();
+        float bullets = rc.getTeamBullets();
+        if (bullets > START_BUYING_VICTORY_POINTS) {
+            float donation = bullets - START_BUYING_VICTORY_POINTS;
+            float victoryPointCost = rc.getVictoryPointCost();
+            int numPoints = (int)(donation / victoryPointCost);
+            rc.donate(numPoints * victoryPointCost);
+        }
     }
 
     private class HireGardeners implements RobotState {
