@@ -105,12 +105,13 @@ public class Lumberjack extends AggressiveRobot {
     }
 
     static boolean shouldBuild(int buildCount, int roundCount, int roundLimit) {
-        if (roundCount > (roundLimit / 2)) {
-            return false;
-        } if (roundCount > (roundLimit / 4)) {
-            return buildCount % 10 == 0;
-        } else {
-            return buildCount % 5 == 0;
-        }
+        return false;
+//        if (roundCount > (roundLimit / 2)) {
+//            return false;
+//        } if (roundCount > (roundLimit / 4)) {
+//            return buildCount % 10 == 0;
+//        } else {
+//            return buildCount % 5 == 0;
+//        }
     }
 }

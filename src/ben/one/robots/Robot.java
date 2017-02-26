@@ -121,7 +121,6 @@ abstract class Robot {
 
     void broadcastBullets(BulletInfo[] bullets) throws GameActionException {
         // TODO - re-enable this later
-        return ;
 //        int numBullets = bullets.length;
 //        if (numBullets <= MAX_BROADCAST_BULLETS) {
 //            for (BulletInfo bullet : bullets) {
@@ -161,7 +160,7 @@ abstract class Robot {
             return null;
         } else {
             // TODO: real implementation
-            return pendingOrders.get(0);
+            return pendingOrders.get(pendingOrders.size() - 1);
         }
     }
 }

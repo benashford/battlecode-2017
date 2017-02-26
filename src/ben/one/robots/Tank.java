@@ -29,6 +29,7 @@ public class Tank extends ShootingRobot {
     }
 
     static boolean shouldBuild(int buildCount, int round, int limit) {
-        return buildCount % 10 == 0;
+        return false;
+        //return buildCount % 10 == 0;
     }
 }
