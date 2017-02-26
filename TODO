@@ -1,4 +1,3 @@
-* Avoid friendly fire
 * Across-unit signalling
 * Avoid getting too close to enemy bots
 * Get very close to enemy bots (Lumberjacks only)
@@ -7,3 +6,4 @@
 * Introduce Tank unit
 * Re-enable Lumberjack
 * All other TODOs
+* Gardeners to avoid planting trees in congested areas
