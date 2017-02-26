@@ -6,7 +6,7 @@ import battlecode.common.RobotController;
 import battlecode.common.TreeInfo;
 import ben.one.Awareness;
 
-public class Lumberjack extends Robot {
+public class Lumberjack extends AggressiveRobot {
     private LumberjackState state = new ChopTrees();
 
     public Lumberjack(RobotController rc) {

@@ -7,27 +7,14 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-public class Gardener extends Robot {
+public class Gardener extends PassiveRobot {
     private static final int NUM_TREES = 4;
-
-    private GardenerState state = new Garden(NUM_TREES);
 
     private Deque<RobotType> buildStack = new ArrayDeque<>();
 
     public Gardener(RobotController rc) {
         super(rc);
-        //buildStack.add(RobotType.LUMBERJACK);
-    }
-
-    void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-        } else if (awareness.isEnemy()) {
-            // TODO: replace with runAway();
-            randomMovement();
-        } else {
-            state = state.act(awareness);
-        }
+        state = new Garden(NUM_TREES);
     }
 
     private void plantRandomTree() throws GameActionException {

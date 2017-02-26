@@ -3,23 +3,12 @@ package ben.one.robots;
 import battlecode.common.*;
 import ben.one.Awareness;
 
-public class Archon extends Robot {
+public class Archon extends PassiveRobot {
     private static final int DEFAULT_GARDENERS = 2;
-
-    private ArchonState state = new HireGardeners(DEFAULT_GARDENERS);
 
     public Archon(RobotController rc) {
         super(rc);
-    }
-
-    void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-        } else if (awareness.isEnemy()) {
-            randomMovement();
-        } else {
-            state = state.act(awareness);
-        }
+        state = new HireGardeners(DEFAULT_GARDENERS);
     }
 
     private class HireGardeners implements ArchonState {
@@ -45,7 +34,6 @@ public class Archon extends Robot {
         }
     }
 
-    // TODO - probably disable this
     private class Roamer implements ArchonState {
         private int turnCount = 0;
 

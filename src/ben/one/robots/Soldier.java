@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Soldier extends Robot {
+public class Soldier extends AggressiveRobot {
     private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
 
     static {
@@ -113,15 +113,15 @@ public class Soldier extends Robot {
                 }
             }
             debug_outf("OK to fire at %s", enemyBot);
-            if (friendsInFiringLine.isEmpty()) {
+            if (friendsInFiringLine.isEmpty() && rc.getTeamBullets() > 100f) {
                 List<RobotInfo> enemiesInFiringLine = opposition.inDirection(enemyDirection);
                 int numEnemiesInFiringLine = enemiesInFiringLine.size();
-                if (numEnemiesInFiringLine > 1) {
+                if (numEnemiesInFiringLine > 2) {
                     if (rc.canFirePentadShot()) {
                         rc.firePentadShot(enemyDirection);
                         break;
                     }
-                } else {
+                } else if (numEnemiesInFiringLine > 1) {
                     if (rc.canFireTriadShot()) {
                         rc.fireTriadShot(enemyDirection);
                         break;
