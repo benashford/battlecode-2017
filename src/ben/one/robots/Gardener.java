@@ -17,6 +17,7 @@ public class Gardener extends PassiveRobot<GardenerState> {
     public Gardener(RobotController rc) {
         super(rc);
         state = new Garden(NUM_TREES);
+        buildStack.add(RobotType.SCOUT);
     }
 
     private void plantRandomTree() throws GameActionException {
@@ -43,6 +44,9 @@ public class Gardener extends PassiveRobot<GardenerState> {
         }
         if (Tank.shouldBuild(buildCount, turns, limit)) {
             buildStack.add(RobotType.TANK);
+        }
+        if (Scout.shouldBuild(buildCount, turns, limit)) {
+            buildStack.add(RobotType.SCOUT);
         }
     }
 

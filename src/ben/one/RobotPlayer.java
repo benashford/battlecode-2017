@@ -22,6 +22,9 @@ public strictfp class RobotPlayer {
             case TANK:
                 new Tank(rc).run();
                 break;
+            case SCOUT:
+                new Scout(rc).run();
+                break;
             default:
                 System.out.printf("Unimplemented Robot %s%n", rc.getType());
         }

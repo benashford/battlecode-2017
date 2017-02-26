@@ -9,3 +9,4 @@
 * Move gardeners away from other gardeners
 * Make sure Lumberjack attacks enemy trees first
 * Make sure Lumberjacks stay a safe distance away from other friendly units/trees (when at war)
+* Better Tank strategy (too slow to evade bullets)
