@@ -9,10 +9,12 @@ abstract class PassiveRobot<S extends RobotState<S>> extends Robot<S> {
         super(rc);
     }
 
-    final void doTurn(Awareness awareness) throws GameActionException {
+    void doTurn(Awareness awareness) throws GameActionException {
         if (awareness.isBullets()) {
             evadeBullets(awareness);
         } else if (awareness.isEnemy()) {
+            broadcastEnemies(awareness.findEnemy());
+            // TODO - runAway();
             randomMovement();
         } else {
             state = state.act(awareness);

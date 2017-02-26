@@ -23,6 +23,7 @@ abstract class AggressiveRobot<S extends RobotState<S>> extends Robot<S> {
             moveAroundEnemy(awareness);
         }
         attackEnemy(awareness);
+        broadcastEnemies(awareness.findEnemy());
     }
 
     private float calculateAttractionFactor(RobotInfo enemyBot) {

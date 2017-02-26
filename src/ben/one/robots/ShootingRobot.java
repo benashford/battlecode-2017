@@ -7,6 +7,8 @@ import ben.one.Periscope;
 import java.util.List;
 import java.util.Map;
 
+import static ben.one.Util.debug_outf;
+
 abstract class ShootingRobot<S extends RobotState<S>> extends AggressiveRobot<S> {
     ShootingRobot(RobotController rc, Map<RobotType, Float> attractionTable) {
         super(rc, attractionTable);
@@ -22,6 +24,10 @@ abstract class ShootingRobot<S extends RobotState<S>> extends AggressiveRobot<S>
             resetState();
         }
         if (!awareness.isDanger()) {
+            MapLocation order = listenForOrders();
+            if (order != null) {
+                debug_outf("RECEIVED ORDER! %s", order);
+            }
             state = state.act(awareness);
         }
     }

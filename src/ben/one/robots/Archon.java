@@ -2,13 +2,23 @@ package ben.one.robots;
 
 import battlecode.common.*;
 import ben.one.Awareness;
+import ben.one.comms.ArchonMessageBroker;
 
 public class Archon extends PassiveRobot<ArchonState> {
     private static final int DEFAULT_GARDENERS = 2;
 
+    private ArchonMessageBroker broker;
+
     public Archon(RobotController rc) {
         super(rc);
         state = new HireGardeners(DEFAULT_GARDENERS);
+        broker = new ArchonMessageBroker(radio, orders);
+    }
+
+    @Override
+    void doTurn(Awareness awareness) throws GameActionException {
+        super.doTurn(awareness);
+        broker.brokerMessages();
     }
 
     private class HireGardeners implements ArchonState {
