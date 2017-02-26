@@ -7,5 +7,5 @@
 * All other TODOs
 * Gardeners to avoid planting trees in congested areas
 * Move gardeners away from other gardeners
-* Make sure Lumberjacks leave friendly trees alone
 * Make sure Lumberjack attacks enemy trees first
+* Make sure Lumberjacks stay a safe distance away from other friendly units/trees (when at war)
