@@ -12,11 +12,11 @@ public class Gardener extends PassiveRobot<GardenerState> {
 
     private Deque<RobotType> buildStack = new ArrayDeque<>();
 
+    private int buildCount = 0;
+
     public Gardener(RobotController rc) {
         super(rc);
         state = new Garden(NUM_TREES);
-        buildStack.add(RobotType.LUMBERJACK);
-        buildStack.add(RobotType.LUMBERJACK);
     }
 
     private void plantRandomTree() throws GameActionException {
@@ -34,6 +34,15 @@ public class Gardener extends PassiveRobot<GardenerState> {
         }
     }
 
+    private void doneBuild() {
+        int turns = rc.getRoundNum();
+        int limit = rc.getRoundLimit();
+        buildCount++;
+        if (Lumberjack.shouldBuild(buildCount, turns, limit)) {
+            buildStack.add(RobotType.LUMBERJACK);
+        }
+    }
+
     private void build() throws GameActionException {
         Direction d = randomDirection();
         RobotType type = nextBuildType();
@@ -42,6 +51,7 @@ public class Gardener extends PassiveRobot<GardenerState> {
             if (!buildStack.isEmpty()) {
                 buildStack.removeLast();
             }
+            doneBuild();
         }
     }
 
