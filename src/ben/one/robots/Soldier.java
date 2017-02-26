@@ -92,6 +92,7 @@ public class Soldier extends Robot {
         MapLocation currentLocation = rc.getLocation();
         List<RobotInfo> enemy = awareness.findEnemy();
         Robot360 team = awareness.findFriendsOrderedByAngle(currentLocation);
+        Robot360 opposition = new Robot360(currentLocation, enemy);
         enemyIter: for (RobotInfo enemyBot : enemy) {
             MapLocation enemyLocation = enemyBot.getLocation();
             Direction enemyDirection = currentLocation.directionTo(enemyLocation);
@@ -113,9 +114,18 @@ public class Soldier extends Robot {
             }
             debug_outf("OK to fire at %s", enemyBot);
             if (friendsInFiringLine.isEmpty()) {
-                if (rc.canFirePentadShot()) {
-                    rc.firePentadShot(enemyDirection);
-                    break;
+                List<RobotInfo> enemiesInFiringLine = opposition.inDirection(enemyDirection);
+                int numEnemiesInFiringLine = enemiesInFiringLine.size();
+                if (numEnemiesInFiringLine > 1) {
+                    if (rc.canFirePentadShot()) {
+                        rc.firePentadShot(enemyDirection);
+                        break;
+                    }
+                } else {
+                    if (rc.canFireTriadShot()) {
+                        rc.fireTriadShot(enemyDirection);
+                        break;
+                    }
                 }
             }
             if (!rc.hasAttacked() && rc.canFireSingleShot()) {

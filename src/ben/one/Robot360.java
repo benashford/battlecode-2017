@@ -19,7 +19,7 @@ public class Robot360 {
 
     private Robot[] robots;
 
-    Robot360(MapLocation loc, List<RobotInfo> robotInfo) {
+    public Robot360(MapLocation loc, List<RobotInfo> robotInfo) {
         robots = new Robot[robotInfo.size()];
         int numRobots = 0;
         for (RobotInfo r : robotInfo) {
