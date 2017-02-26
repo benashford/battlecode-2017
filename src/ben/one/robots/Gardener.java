@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.List;
 
 public class Gardener extends Robot {
-    private static final int NUM_TREES = 3;
+    private static final int NUM_TREES = 4;
 
     private GardenerState state = new Garden(NUM_TREES);
 
