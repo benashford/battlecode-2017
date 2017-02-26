@@ -1,29 +1,37 @@
 package ben.one.robots;
 
-import battlecode.common.Direction;
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
-import battlecode.common.TreeInfo;
+import battlecode.common.*;
 import ben.one.Awareness;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Lumberjack extends AggressiveRobot<LumberjackState> {
+    private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
+
+    static {
+        ATTRACTIONS.put(RobotType.ARCHON, 20f);
+        ATTRACTIONS.put(RobotType.SOLDIER, -20f);
+        ATTRACTIONS.put(RobotType.GARDENER, 10f);
+        ATTRACTIONS.put(RobotType.LUMBERJACK, -20f);
+        ATTRACTIONS.put(RobotType.SCOUT, -20f);
+        ATTRACTIONS.put(RobotType.TANK, -40f);
+    }
+
     public Lumberjack(RobotController rc) {
-        super(rc);
+        super(rc, ATTRACTIONS);
         resetState();
     }
 
     @Override
-    void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-            resetState();
-        } else {
-            state = state.act(awareness);
-        }
+    void resetState() {
+        state = new ChopTrees();
     }
 
-    private void resetState() {
-        state = new ChopTrees();
+    @Override
+    void attackEnemy(Awareness awareness) throws GameActionException {
+        // TODO: implement me
+        debug_outf("ATTACK! NOT YET IMPLEMENTED");
     }
 
     private void chopTrees(Awareness awareness) throws GameActionException {

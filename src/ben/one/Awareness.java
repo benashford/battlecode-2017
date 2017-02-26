@@ -107,8 +107,8 @@ public class Awareness {
         return friend;
     }
 
-    public Robot360 findFriendsOrderedByAngle(MapLocation loc) {
-        return new Robot360(loc, findFriends());
+    public Periscope findFriendsOrderedByAngle(MapLocation loc) {
+        return new Periscope(loc, findFriends());
     }
 
     public boolean isEnemy() {

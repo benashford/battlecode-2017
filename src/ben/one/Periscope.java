@@ -14,12 +14,12 @@ import java.util.List;
  *
  * TODO: generalise this for easier map searching
  */
-public class Robot360 {
+public class Periscope {
     private static final float SAME_DIRECTION_LIMIT = (float)Math.PI / 3f;
 
     private Robot[] robots;
 
-    public Robot360(MapLocation loc, List<RobotInfo> robotInfo) {
+    public Periscope(MapLocation loc, List<RobotInfo> robotInfo) {
         robots = new Robot[robotInfo.size()];
         int numRobots = 0;
         for (RobotInfo r : robotInfo) {

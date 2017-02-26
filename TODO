@@ -1,5 +1,4 @@
 * Across-unit signalling
-* Avoid getting too close to enemy bots
 * Get very close to enemy bots (Lumberjacks only)
 * Collatoral damage - target enemy trees, etc.
 * Introduce Scout unit
@@ -8,3 +7,5 @@
 * All other TODOs
 * Gardeners to avoid planting trees in congested areas
 * Move gardeners away from other gardeners
+* Make sure Lumberjacks leave friendly trees alone
+* Make sure Lumberjack attacks enemy trees first
