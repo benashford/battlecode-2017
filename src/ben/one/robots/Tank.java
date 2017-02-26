@@ -8,7 +8,7 @@ import ben.one.Awareness;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Tank extends ShootingRobot<TankState> {
+public class Tank extends ShootingRobot {
     private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
 
     static {
@@ -30,21 +30,7 @@ public class Tank extends ShootingRobot<TankState> {
         state = new Roam();
     }
 
-    private class Roam implements TankState {
-        @Override
-        public TankState act(Awareness awareness) throws GameActionException {
-            if (!rc.hasMoved()) {
-                defaultMovement(awareness);
-            }
-            return this;
-        }
-    }
-
     static boolean shouldBuild(int buildCount, int round, int limit) {
         return buildCount % 6 == 0;
     }
-}
-
-interface TankState extends RobotState<TankState> {
-
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static ben.one.Util.debug_outf;
 
-abstract class ShootingRobot<S extends RobotState<S>> extends AggressiveRobot<S> {
+abstract class ShootingRobot extends AggressiveRobot {
     ShootingRobot(RobotController rc, Map<RobotType, Float> attractionTable) {
         super(rc, attractionTable);
     }
@@ -81,6 +81,16 @@ abstract class ShootingRobot<S extends RobotState<S>> extends AggressiveRobot<S>
                 debug_outf("Fired in: %s", enemyDirection);
                 break;
             }
+        }
+    }
+
+    class Roam implements RobotState {
+        @Override
+        public RobotState act(Awareness awareness) throws GameActionException {
+            if (!rc.hasMoved()) {
+                defaultMovement(awareness);
+            }
+            return this;
         }
     }
 

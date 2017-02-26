@@ -12,7 +12,7 @@ import java.util.List;
 
 import static ben.one.Util.debug_outf;
 
-abstract class Robot<S extends RobotState<S>> {
+abstract class Robot {
     /**
      * The maximum number of bullet sources to broadcast.
      */
@@ -20,7 +20,7 @@ abstract class Robot<S extends RobotState<S>> {
     private static final int MAX_BROADCAST_ENEMIES = 4;
 
     RobotController rc;
-    S state;
+    RobotState state;
 
     ShipToShore radio;
     ShoreToShip orders;

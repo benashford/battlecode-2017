@@ -8,7 +8,7 @@ import ben.one.Awareness;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Soldier extends ShootingRobot<SoldierState> {
+public class Soldier extends ShootingRobot {
     private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
 
     static {
@@ -29,18 +29,4 @@ public class Soldier extends ShootingRobot<SoldierState> {
     void resetState() {
         state = new Roam();
     }
-
-    private class Roam implements SoldierState {
-        @Override
-        public SoldierState act(Awareness awareness) throws GameActionException {
-            if (!rc.hasMoved()) {
-                defaultMovement(awareness);
-            }
-            return this;
-        }
-    }
-}
-
-interface SoldierState extends RobotState<SoldierState> {
-
 }

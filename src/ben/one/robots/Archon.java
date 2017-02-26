@@ -4,7 +4,7 @@ import battlecode.common.*;
 import ben.one.Awareness;
 import ben.one.comms.ArchonMessageBroker;
 
-public class Archon extends PassiveRobot<ArchonState> {
+public class Archon extends PassiveRobot {
     private static final int DEFAULT_GARDENERS = 2;
 
     private ArchonMessageBroker broker;
@@ -21,14 +21,14 @@ public class Archon extends PassiveRobot<ArchonState> {
         broker.brokerMessages();
     }
 
-    private class HireGardeners implements ArchonState {
+    private class HireGardeners implements RobotState {
         private int gardenersToHire;
 
         HireGardeners(int numOfGardeners) {
             this.gardenersToHire = numOfGardeners;
         }
 
-        public ArchonState act(Awareness awareness) throws GameActionException {
+        public RobotState act(Awareness awareness) throws GameActionException {
             Direction d2 = randomDirection();
             if (rc.canHireGardener(d2)) {
                 rc.hireGardener(d2);
@@ -44,11 +44,11 @@ public class Archon extends PassiveRobot<ArchonState> {
         }
     }
 
-    private class Roamer implements ArchonState {
+    private class Roamer implements RobotState {
         private int turnCount = 0;
 
         @Override
-        public ArchonState act(Awareness awareness) throws GameActionException {
+        public RobotState act(Awareness awareness) throws GameActionException {
             defaultMovement(awareness);
             turnCount++;
             if (turnCount < (rc.getRoundNum() * 2)) {
@@ -58,9 +58,5 @@ public class Archon extends PassiveRobot<ArchonState> {
             }
         }
     }
-}
-
-interface ArchonState extends RobotState<ArchonState> {
-
 }
 

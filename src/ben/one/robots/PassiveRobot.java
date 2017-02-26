@@ -4,7 +4,7 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import ben.one.Awareness;
 
-abstract class PassiveRobot<S extends RobotState<S>> extends Robot<S> {
+abstract class PassiveRobot extends Robot {
     PassiveRobot(RobotController rc) {
         super(rc);
     }

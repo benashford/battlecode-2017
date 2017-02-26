@@ -7,7 +7,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-public class Gardener extends PassiveRobot<GardenerState> {
+public class Gardener extends PassiveRobot {
     private static final int NUM_TREES = 4;
 
     private Deque<RobotType> buildStack = new ArrayDeque<>();
@@ -62,7 +62,7 @@ public class Gardener extends PassiveRobot<GardenerState> {
         }
     }
 
-    private class Garden implements GardenerState {
+    private class Garden implements RobotState {
         private int numTrees;
 
         private Garden(int numTrees) {
@@ -70,7 +70,7 @@ public class Gardener extends PassiveRobot<GardenerState> {
         }
 
         @Override
-        public GardenerState act(Awareness awareness) throws GameActionException {
+        public RobotState act(Awareness awareness) throws GameActionException {
             List<TreeInfo> trees = awareness.findFriendTrees();
 
             if (!trees.isEmpty()) {
@@ -111,8 +111,4 @@ public class Gardener extends PassiveRobot<GardenerState> {
             return this;
         }
     }
-}
-
-interface GardenerState extends RobotState<GardenerState> {
-
 }

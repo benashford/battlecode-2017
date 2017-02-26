@@ -6,7 +6,7 @@ import ben.one.Awareness;
 import java.util.List;
 import java.util.Map;
 
-abstract class AggressiveRobot<S extends RobotState<S>> extends Robot<S> {
+abstract class AggressiveRobot extends Robot {
     // TODO: this could be a simple array
     private final Map<RobotType, Float> attractionTable;
 

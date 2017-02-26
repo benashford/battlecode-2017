@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Lumberjack extends AggressiveRobot<LumberjackState> {
+public class Lumberjack extends AggressiveRobot {
     private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
 
     static {
@@ -96,9 +96,9 @@ public class Lumberjack extends AggressiveRobot<LumberjackState> {
         }
     }
 
-    private class ChopTrees implements LumberjackState {
+    private class ChopTrees implements RobotState {
         @Override
-        public LumberjackState act(Awareness awareness) throws GameActionException {
+        public RobotState act(Awareness awareness) throws GameActionException {
             chopTrees(awareness);
             return this;
         }
@@ -113,8 +113,4 @@ public class Lumberjack extends AggressiveRobot<LumberjackState> {
             return buildCount % 5 == 0;
         }
     }
-}
-
-interface LumberjackState extends RobotState<LumberjackState> {
-
 }
