@@ -6,20 +6,24 @@ import battlecode.common.RobotController;
 import battlecode.common.TreeInfo;
 import ben.one.Awareness;
 
-public class Lumberjack extends AggressiveRobot {
-    private LumberjackState state = new ChopTrees();
-
+public class Lumberjack extends AggressiveRobot<LumberjackState> {
     public Lumberjack(RobotController rc) {
         super(rc);
+        resetState();
     }
 
     @Override
     void doTurn(Awareness awareness) throws GameActionException {
         if (awareness.isBullets()) {
             evadeBullets(awareness);
+            resetState();
         } else {
             state = state.act(awareness);
         }
+    }
+
+    private void resetState() {
+        state = new ChopTrees();
     }
 
     private void chopTrees(Awareness awareness) throws GameActionException {
@@ -46,7 +50,6 @@ public class Lumberjack extends AggressiveRobot {
     }
 
     private class ChopTrees implements LumberjackState {
-
         @Override
         public LumberjackState act(Awareness awareness) throws GameActionException {
             chopTrees(awareness);

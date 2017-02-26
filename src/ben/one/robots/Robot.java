@@ -3,8 +3,9 @@ package ben.one.robots;
 import battlecode.common.*;
 import ben.one.Awareness;
 
-abstract class Robot {
+abstract class Robot<S extends RobotState<S>> {
     RobotController rc;
+    S state;
 
     Robot(RobotController rc) {
         this.rc = rc;

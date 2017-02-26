@@ -3,7 +3,7 @@ package ben.one.robots;
 import battlecode.common.*;
 import ben.one.Awareness;
 
-public class Archon extends PassiveRobot {
+public class Archon extends PassiveRobot<ArchonState> {
     private static final int DEFAULT_GARDENERS = 2;
 
     public Archon(RobotController rc) {

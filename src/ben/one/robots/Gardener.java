@@ -7,7 +7,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-public class Gardener extends PassiveRobot {
+public class Gardener extends PassiveRobot<GardenerState> {
     private static final int NUM_TREES = 4;
 
     private Deque<RobotType> buildStack = new ArrayDeque<>();

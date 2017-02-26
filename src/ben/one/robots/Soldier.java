@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Soldier extends AggressiveRobot {
+public class Soldier extends ShootingRobot<SoldierState> {
     private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
 
     static {
@@ -20,10 +20,9 @@ public class Soldier extends AggressiveRobot {
         ATTRACTIONS.put(RobotType.TANK, -50f);
     }
 
-    private SoldierState state = new Roam();
-
     public Soldier(RobotController rc) {
         super(rc);
+        resetState();
     }
 
     void doTurn(Awareness awareness) throws GameActionException {
@@ -53,8 +52,6 @@ public class Soldier extends AggressiveRobot {
     }
 
     private void moveAroundEnemy(Awareness awareness) throws GameActionException {
-        // RULES: stay away from tanks and lumberjacks
-        // move closer to weaker units
         MapLocation pos = rc.getLocation();
         float nextX = pos.x;
         float nextY = pos.y;
