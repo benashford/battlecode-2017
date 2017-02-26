@@ -41,6 +41,9 @@ public class Gardener extends PassiveRobot<GardenerState> {
         if (Lumberjack.shouldBuild(buildCount, turns, limit)) {
             buildStack.add(RobotType.LUMBERJACK);
         }
+        if (Tank.shouldBuild(buildCount, turns, limit)) {
+            buildStack.add(RobotType.TANK);
+        }
     }
 
     private void build() throws GameActionException {
