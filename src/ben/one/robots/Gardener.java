@@ -15,6 +15,8 @@ public class Gardener extends PassiveRobot<GardenerState> {
     public Gardener(RobotController rc) {
         super(rc);
         state = new Garden(NUM_TREES);
+        buildStack.add(RobotType.LUMBERJACK);
+        buildStack.add(RobotType.LUMBERJACK);
     }
 
     private void plantRandomTree() throws GameActionException {
@@ -52,7 +54,7 @@ public class Gardener extends PassiveRobot<GardenerState> {
 
         @Override
         public GardenerState act(Awareness awareness) throws GameActionException {
-            List<TreeInfo> trees = awareness.findTeamTrees();
+            List<TreeInfo> trees = awareness.findFriendTrees();
 
             if (!trees.isEmpty()) {
                 TreeInfo poorestTree = trees.get(0);

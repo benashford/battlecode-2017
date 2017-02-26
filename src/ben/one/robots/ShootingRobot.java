@@ -12,6 +12,22 @@ abstract class ShootingRobot<S extends RobotState<S>> extends AggressiveRobot<S>
         super(rc, attractionTable);
     }
 
+    final void doTurn(Awareness awareness) throws GameActionException {
+        if (awareness.isBullets()) {
+            evadeBullets(awareness);
+            resetState();
+        }
+        if (awareness.isEnemy()) {
+            moveAndAttack(awareness);
+            resetState();
+        }
+        if (!awareness.isDanger()) {
+            state = state.act(awareness);
+        }
+    }
+
+    abstract void resetState();
+
     @Override
     void attackEnemy(Awareness awareness) throws GameActionException {
         MapLocation currentLocation = rc.getLocation();

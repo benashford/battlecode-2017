@@ -15,29 +15,14 @@ abstract class AggressiveRobot<S extends RobotState<S>> extends Robot<S> {
         this.attractionTable = attractionTable;
     }
 
-    abstract void resetState();
     abstract void attackEnemy(Awareness awareness) throws GameActionException;
 
-    private void moveAndAttack(Awareness awareness) throws GameActionException {
+    void moveAndAttack(Awareness awareness) throws GameActionException {
         if (!rc.hasMoved()) {
             // Unit may have already moved to dodge bullets
             moveAroundEnemy(awareness);
         }
         attackEnemy(awareness);
-    }
-
-    final void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-            resetState();
-        }
-        if (awareness.isEnemy()) {
-            moveAndAttack(awareness);
-            resetState();
-        }
-        if (!awareness.isDanger()) {
-            state = state.act(awareness);
-        }
     }
 
     private float calculateAttractionFactor(RobotInfo enemyBot) {

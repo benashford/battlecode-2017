@@ -9,7 +9,10 @@ public class Awareness {
     private final RobotController rc;
 
     private BulletInfo[] bullets;
-    private TreeInfo[] trees;
+    private List<TreeInfo> enemyTrees;
+    private List<TreeInfo> friendTrees;
+    private List<TreeInfo> neutralTrees;
+
     private List<RobotInfo> enemy;
     private List<RobotInfo> friend;
 
@@ -17,15 +20,49 @@ public class Awareness {
         this.rc = rc;
     }
 
-    public TreeInfo[] findTrees() {
-        if (trees == null) {
-            trees = rc.senseNearbyTrees();
+    private void processTrees() {
+        TreeInfo[] trees = rc.senseNearbyTrees();
+        enemyTrees = new ArrayList<>(trees.length);
+        friendTrees = new ArrayList<>(trees.length);
+        neutralTrees = new ArrayList<>(trees.length);
+
+        Team myTeam = rc.getTeam();
+
+        for (TreeInfo tree : trees) {
+            Team treeTeam = tree.getTeam();
+            if (treeTeam == Team.NEUTRAL) {
+                neutralTrees.add(tree);
+            } else if (treeTeam == myTeam) {
+                friendTrees.add(tree);
+            } else {
+                enemyTrees.add(tree);
+            }
         }
-        return trees;
+    }
+
+    public List<TreeInfo> findNeutralTrees() {
+        if (neutralTrees == null) {
+            processTrees();
+        }
+        return neutralTrees;
+    }
+
+    public List<TreeInfo> findFriendTrees() {
+        if (friendTrees == null) {
+            processTrees();
+        }
+        return friendTrees;
+    }
+
+    public List<TreeInfo> findEnemyTrees() {
+        if (enemyTrees == null) {
+            processTrees();
+        }
+        return enemyTrees;
     }
 
     public TreeInfo findNearestTreeWithBullets() {
-        TreeInfo[] trees = findTrees();
+        List<TreeInfo> trees = findNeutralTrees();
         for (TreeInfo tree : trees) {
             if (tree.getContainedBullets() > 0) {
                 debug_tree(tree, 255);
@@ -36,7 +73,7 @@ public class Awareness {
     }
 
     public TreeInfo findNearestTreeWithRobot() {
-        TreeInfo[] trees = findTrees();
+        List<TreeInfo> trees = findNeutralTrees();
         for (TreeInfo tree : trees) {
             if (tree.getContainedRobot() != null) {
                 debug_tree(tree, 127);
@@ -47,24 +84,15 @@ public class Awareness {
     }
 
     public TreeInfo findNearestTree() {
-        TreeInfo[] trees = findTrees();
-        if (trees.length > 0) {
-            return trees[0];
-        } else {
-            return null;
+        List<TreeInfo> enemyTrees = findEnemyTrees();
+        if (!enemyTrees.isEmpty()) {
+            return enemyTrees.iterator().next();
         }
-    }
-
-    public List<TreeInfo> findTeamTrees() {
-        Team myTeam = rc.getTeam();
-        TreeInfo[] trees = findTrees();
-        List<TreeInfo> teamTrees = new ArrayList<>(trees.length);
-        for (TreeInfo tree : trees) {
-            if (tree.getTeam() == myTeam) {
-                teamTrees.add(tree);
-            }
+        List<TreeInfo> neutralTrees = findNeutralTrees();
+        if (!neutralTrees.isEmpty()) {
+            return neutralTrees.iterator().next();
         }
-        return teamTrees;
+        return null;
     }
 
     public BulletInfo[] findBullets() {

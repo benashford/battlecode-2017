@@ -4,6 +4,7 @@ import battlecode.common.*;
 import ben.one.Awareness;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Lumberjack extends AggressiveRobot<LumberjackState> {
@@ -11,7 +12,7 @@ public class Lumberjack extends AggressiveRobot<LumberjackState> {
 
     static {
         ATTRACTIONS.put(RobotType.ARCHON, 20f);
-        ATTRACTIONS.put(RobotType.SOLDIER, -20f);
+        ATTRACTIONS.put(RobotType.SOLDIER, 0f);
         ATTRACTIONS.put(RobotType.GARDENER, 10f);
         ATTRACTIONS.put(RobotType.LUMBERJACK, -20f);
         ATTRACTIONS.put(RobotType.SCOUT, -20f);
@@ -23,15 +24,51 @@ public class Lumberjack extends AggressiveRobot<LumberjackState> {
         resetState();
     }
 
-    @Override
     void resetState() {
         state = new ChopTrees();
     }
 
+    final void doTurn(Awareness awareness) throws GameActionException {
+        if (awareness.isBullets()) {
+            evadeBullets(awareness);
+        }
+        if (awareness.isEnemy()) {
+            moveAndAttack(awareness);
+        }
+        if (!awareness.isDanger()) {
+            state = state.act(awareness);
+        }
+    }
+
+    private <B extends BodyInfo> boolean inStrikingRange(MapLocation me, List<B> bodies) {
+        for (B body : bodies) {
+            MapLocation bodyLoc = body.getLocation();
+            float distance = me.distanceTo(bodyLoc) - body.getRadius();
+            if (distance < RobotType.LUMBERJACK.bodyRadius * 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     void attackEnemy(Awareness awareness) throws GameActionException {
-        // TODO: implement me
-        debug_outf("ATTACK! NOT YET IMPLEMENTED");
+        // Check that an enemy is within striking range, but no units of own side are that close
+        MapLocation myLocation = rc.getLocation();
+        List<RobotInfo> friends = awareness.findFriends();
+        if (inStrikingRange(myLocation, friends)) {
+            return;
+        }
+        List<TreeInfo> teamTrees = awareness.findFriendTrees();
+        if (inStrikingRange(myLocation, teamTrees)) {
+            return;
+        }
+        List<RobotInfo> enemy = awareness.findEnemy();
+        List<TreeInfo> enemyTrees = awareness.findEnemyTrees();
+        boolean attack = inStrikingRange(myLocation, enemy) && inStrikingRange(myLocation, enemyTrees);
+        if (attack && rc.canStrike()) {
+            rc.strike();
+        }
     }
 
     private void chopTrees(Awareness awareness) throws GameActionException {
@@ -39,7 +76,8 @@ public class Lumberjack extends AggressiveRobot<LumberjackState> {
         if (tree != null) {
             if (rc.canInteractWithTree(tree.getID())) {
                 rc.chop(tree.getID());
-            } else {
+                return;
+            } else if (!rc.hasMoved()) {
                 Direction d = rc.getLocation().directionTo(tree.getLocation());
                 if (rc.canMove(d)) {
                     rc.move(d);
@@ -50,6 +88,7 @@ public class Lumberjack extends AggressiveRobot<LumberjackState> {
         if (nearestTree != null) {
             if (rc.canInteractWithTree(nearestTree.getID()) && !rc.hasAttacked()) {
                 rc.chop(nearestTree.getID());
+                return;
             }
         }
         if (!rc.hasMoved()) {
