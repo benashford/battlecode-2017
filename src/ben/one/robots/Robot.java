@@ -72,7 +72,7 @@ abstract class Robot {
             float distance = myLocation.distanceTo(bulletLoc);
             float missBy = distance * (float)Math.tan(angle);
 
-            if (Math.abs(missBy) < radius + bullet.getRadius()) {
+            if (Math.abs(missBy) < radius) {
                 debug_outf("Bullet %s, will hit, distance: %.2f", bullet, missBy);
                 float bulletSpeed = bullet.getSpeed();
                 float distanceNextTurn = Math.max(0, distance - bulletSpeed);
@@ -100,6 +100,6 @@ abstract class Robot {
     // DEBUG
 
     void debug_outf(String pattern, Object... args) {
-        System.out.printf("%s%n", String.format(pattern, args));
+        System.out.printf("%n***%n%s%n", String.format(pattern, args));
     }
 }

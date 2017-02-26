@@ -100,6 +100,17 @@ public class Awareness {
         return enemy;
     }
 
+    public List<RobotInfo> findFriends() {
+        if (friend == null) {
+            processRobots();
+        }
+        return friend;
+    }
+
+    public Robot360 findFriendsOrderedByAngle(MapLocation loc) {
+        return new Robot360(loc, findFriends());
+    }
+
     public boolean isEnemy() {
         return !findEnemy().isEmpty();
     }

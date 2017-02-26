@@ -2,6 +2,7 @@ package ben.one.robots;
 
 import battlecode.common.*;
 import ben.one.Awareness;
+import ben.one.Robot360;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,11 +89,41 @@ public class Soldier extends Robot {
     }
 
     private void fireAtEnemy(Awareness awareness) throws GameActionException {
-        // TODO: real implementation
-        RobotInfo enemyBot = awareness.findEnemy().get(0);
-        MapLocation enemyPos = enemyBot.getLocation();
-        if (rc.canFirePentadShot()) {
-            rc.firePentadShot(rc.getLocation().directionTo(enemyPos));
+        MapLocation currentLocation = rc.getLocation();
+        List<RobotInfo> enemy = awareness.findEnemy();
+        Robot360 team = awareness.findFriendsOrderedByAngle(currentLocation);
+        enemyIter: for (RobotInfo enemyBot : enemy) {
+            MapLocation enemyLocation = enemyBot.getLocation();
+            Direction enemyDirection = currentLocation.directionTo(enemyLocation);
+            List<RobotInfo> friendsInFiringLine = team.inDirection(enemyDirection);
+            for (RobotInfo friend : friendsInFiringLine) {
+                MapLocation friendLocation = friend.getLocation();
+                float friendDistance = currentLocation.distanceTo(friendLocation);
+                Direction friendDirection = currentLocation.directionTo(friendLocation);
+                float angle = enemyDirection.degreesBetween(friendDirection);
+                float missBy = friendDistance * (float)Math.sin(angle);
+                if (Math.abs(missBy) < friend.getRadius()) {
+                    debug_outf("Not firing at %s, due to location of %s, missBy: %.2f", enemyBot, friend, missBy);
+                    debug_spot(friendLocation, 127, 0, 0);
+                    continue enemyIter;
+                } else {
+                    debug_outf("Miss range to: %s is %.2f", friend, missBy);
+                    debug_spot(friendLocation, 0, 0, 0);
+                }
+            }
+            debug_outf("OK to fire at %s", enemyBot);
+            if (friendsInFiringLine.isEmpty()) {
+                if (rc.canFirePentadShot()) {
+                    rc.firePentadShot(enemyDirection);
+                    break;
+                }
+            }
+            if (!rc.hasAttacked() && rc.canFireSingleShot()) {
+                debug_shot(currentLocation, enemyLocation);
+                rc.fireSingleShot(enemyDirection);
+                debug_outf("Fired in: %s", enemyDirection);
+                break;
+            }
         }
     }
 
@@ -112,6 +143,16 @@ public class Soldier extends Robot {
             }
             return this;
         }
+    }
+
+    // DEBUGGING
+
+    private void debug_spot(MapLocation location, int r, int g, int b) {
+        rc.setIndicatorDot(location, r, g, b);
+    }
+
+    private void debug_shot(MapLocation location, MapLocation otherLocation) {
+        rc.setIndicatorLine(location, otherLocation, 255, 153, 0);
     }
 }
 
