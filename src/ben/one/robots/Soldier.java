@@ -1,9 +1,7 @@
 package ben.one.robots;
 
-import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
-import ben.one.Awareness;
 
 import java.util.HashMap;
 import java.util.Map;
