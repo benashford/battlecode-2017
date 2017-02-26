@@ -9,6 +9,6 @@ class BulletMsg extends LocationBasedMsg {
     }
 
     static BulletMsg readMessage(RobotController rc, int pos) throws GameActionException {
-        return new BulletMsg(rc.readBroadcast(pos + 1), rc.readBroadcast(pos + 2));
+        return new BulletMsg(rc.readBroadcastFloat(pos + 1), rc.readBroadcastFloat(pos + 2));
     }
 }

@@ -27,6 +27,7 @@ abstract class ShootingRobot extends AggressiveRobot {
             MapLocation order = listenForOrders();
             if (order != null) {
                 debug_outf("RECEIVED ORDER! %s", order);
+                state = new MoveTo(order);
             }
             state = state.act(awareness);
         }
@@ -94,6 +95,29 @@ abstract class ShootingRobot extends AggressiveRobot {
         }
     }
 
+    class MoveTo implements RobotState {
+        private MapLocation targetDir;
+
+        MoveTo(MapLocation order) {
+            this.targetDir = order;
+        }
+
+        @Override
+        public RobotState act(Awareness awareness) throws GameActionException {
+            MapLocation myLocation = rc.getLocation();
+            Direction dir = myLocation.directionTo(targetDir);
+            debug_outf("Trying to move in direction: %s", dir);
+            if (rc.canMove(dir)) {
+                debug_dir(myLocation, targetDir);
+                rc.move(dir);
+                return this;
+            } else {
+                defaultMovement(awareness);
+                return new Roam();
+            }
+        }
+    }
+
     // DEBUGGING
 
     void debug_spot(MapLocation location, int r, int g, int b) {
@@ -102,5 +126,9 @@ abstract class ShootingRobot extends AggressiveRobot {
 
     void debug_shot(MapLocation location, MapLocation otherLocation) {
         rc.setIndicatorLine(location, otherLocation, 255, 153, 0);
+    }
+
+    void debug_dir(MapLocation start, MapLocation end) {
+        rc.setIndicatorLine(start, end, 127, 127, 127);
     }
 }

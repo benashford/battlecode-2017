@@ -120,20 +120,22 @@ abstract class Robot {
     }
 
     void broadcastBullets(BulletInfo[] bullets) throws GameActionException {
-        int numBullets = bullets.length;
-        if (numBullets <= MAX_BROADCAST_BULLETS) {
-            for (BulletInfo bullet : bullets) {
-                MapLocation source = bullet.getLocation();
-                radio.broadcastBullet(source);
-            }
-        } else {
-            List<BulletInfo> shuffleableBullets = new ArrayList<>(Arrays.asList(bullets));
-            Collections.shuffle(shuffleableBullets);
-            for (int i = 0; i < MAX_BROADCAST_BULLETS; i++) {
-                BulletInfo bullet = shuffleableBullets.get(i);
-                radio.broadcastBullet(bullet.getLocation());
-            }
-        }
+        // TODO - re-enable this later
+        return ;
+//        int numBullets = bullets.length;
+//        if (numBullets <= MAX_BROADCAST_BULLETS) {
+//            for (BulletInfo bullet : bullets) {
+//                MapLocation source = bullet.getLocation();
+//                radio.broadcastBullet(source);
+//            }
+//        } else {
+//            List<BulletInfo> shuffleableBullets = new ArrayList<>(Arrays.asList(bullets));
+//            Collections.shuffle(shuffleableBullets);
+//            for (int i = 0; i < MAX_BROADCAST_BULLETS; i++) {
+//                BulletInfo bullet = shuffleableBullets.get(i);
+//                radio.broadcastBullet(bullet.getLocation());
+//            }
+//        }
     }
 
     void broadcastEnemies(List<RobotInfo> enemies) throws GameActionException {

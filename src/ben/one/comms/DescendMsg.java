@@ -9,6 +9,6 @@ class DescendMsg extends LocationBasedMsg {
     }
 
     static DescendMsg readMessage(RobotController rc, int pos) throws GameActionException {
-        return new DescendMsg(rc.readBroadcast(pos + 1), rc.readBroadcast(pos + 2));
+        return new DescendMsg(rc.readBroadcastFloat(pos + 1), rc.readBroadcastFloat(pos + 2));
     }
 }

@@ -9,6 +9,6 @@ class EnemyMsg extends LocationBasedMsg {
     }
 
     static EnemyMsg readMessage(RobotController rc, int pos) throws GameActionException {
-        return new EnemyMsg(rc.readBroadcast(pos + 1), rc.readBroadcast(pos + 2));
+        return new EnemyMsg(rc.readBroadcastFloat(pos + 1), rc.readBroadcastFloat(pos + 2));
     }
 }
