@@ -10,7 +10,7 @@ public class Tank extends ShootingRobot {
     private static final Map<RobotType, Float> ATTRACTIONS = new HashMap<>();
 
     static {
-        ATTRACTIONS.put(RobotType.ARCHON, 100f);
+        ATTRACTIONS.put(RobotType.ARCHON, 0f);
         ATTRACTIONS.put(RobotType.SOLDIER, 10f);
         ATTRACTIONS.put(RobotType.GARDENER, 50f);
         ATTRACTIONS.put(RobotType.LUMBERJACK, 10f);

@@ -1,12 +1,14 @@
 package ben.one;
 
 import battlecode.common.*;
+import ben.one.comms.ShoreToShip;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Awareness {
     private final RobotController rc;
+    private final ShoreToShip radio;
 
     private BulletInfo[] bullets;
     private List<TreeInfo> enemyTrees;
@@ -16,8 +18,11 @@ public class Awareness {
     private List<RobotInfo> enemy;
     private List<RobotInfo> friend;
 
-    public Awareness(RobotController rc) {
+    private List<MapLocation> orders;
+
+    public Awareness(RobotController rc, ShoreToShip radio) {
         this.rc = rc;
+        this.radio = radio;
     }
 
     private void processTrees() {
@@ -146,6 +151,34 @@ public class Awareness {
     public boolean isDanger() {
         return isBullets() || isEnemy();
     }
+
+    private void processOrders() throws GameActionException {
+        orders = radio.readOrders();
+    }
+
+    public List<MapLocation> getOrders() throws GameActionException {
+        if (orders == null) {
+            processOrders();
+        }
+        return orders;
+    }
+
+    public boolean hasOrders() throws GameActionException {
+        if (orders == null) {
+            processOrders();
+        }
+        return !orders.isEmpty();
+    }
+//    public MapLocation listenForOrders() throws GameActionException {
+//        List<MapLocation> pendingOrders = orders.readOrders();
+//        int numOrders = pendingOrders.size();
+//        if (numOrders > 0) {
+//            int idx = rand.nextInt(numOrders);
+//            return pendingOrders.get(idx);
+//        } else {
+//            return null;
+//        }
+//    }
 
     // DEBUG
 

@@ -69,7 +69,7 @@ abstract class Robot {
     public final void run() throws GameActionException {
         state = initState();
         while (true) {
-            doTurn(new Awareness(rc));
+            doTurn(new Awareness(rc, orders));
             Clock.yield();
         }
     }
@@ -190,17 +190,6 @@ abstract class Robot {
                 RobotInfo enemy = shuffleableEnemies.get(i);
                 radio.broadcastEnemy(enemy.getLocation());
             }
-        }
-    }
-
-    MapLocation listenForOrders() throws GameActionException {
-        List<MapLocation> pendingOrders = orders.readOrders();
-        int numOrders = pendingOrders.size();
-        if (numOrders > 0) {
-            int idx = rand.nextInt(numOrders);
-            return pendingOrders.get(idx);
-        } else {
-            return null;
         }
     }
 

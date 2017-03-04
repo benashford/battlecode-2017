@@ -23,7 +23,6 @@ abstract class AggressiveRobot extends Robot {
             moveAroundEnemy(awareness);
         }
         attackEnemy(awareness);
-        broadcastEnemies(awareness.findEnemy());
     }
 
     private float calculateAttractionFactor(RobotInfo enemyBot) {
@@ -68,10 +67,90 @@ abstract class AggressiveRobot extends Robot {
         }
     }
 
-    class Roam extends RobotState {
+    class Attack extends RobotState {
+        RobotState interrupt(Awareness awareness) {
+            if (awareness.isDanger()) {
+                return this;
+            } else {
+                return wrappedState;
+            }
+        }
+
+        RobotState act(Awareness awareness) throws GameActionException {
+            moveAndAttack(awareness);
+            return this;
+        }
+    }
+
+    //    class MoveTo implements RobotState {
+//        private MapLocation targetDir;
+//
+//        MoveTo(MapLocation order) {
+//            this.targetDir = order;
+//        }
+//
+//        @Override
+//        public RobotState act(Awareness awareness) throws GameActionException {
+//            MapLocation myLocation = rc.getLocation();
+//            Direction dir = myLocation.directionTo(targetDir);
+//            debug_outf("Trying to move in direction: %s", dir);
+//            if (rc.canMove(dir)) {
+//                debug_dir(myLocation, targetDir);
+//                rc.move(dir);
+//                return this;
+//            } else {
+//                defaultMovement(awareness);
+//                return new Roam();
+//            }
+//        }
+//    }
+
+    class MoveTo extends RobotState {
+        private float CLOSE_ENOUGH = 0.5f;
+
+        private MapLocation targetLoc;
+
+        MoveTo(MapLocation order) {
+            this.targetLoc = order;
+        }
+
         RobotState interrupt(Awareness awareness) {
             if (awareness.isBullets()) {
                 return new Evade(this);
+            } else if (awareness.isEnemy()) {
+                return new Attack();
+            } else {
+                return this;
+            }
+        }
+
+        RobotState act(Awareness awareness) throws GameActionException {
+            MapLocation myLocation = rc.getLocation();
+            float distance = myLocation.distanceTo(targetLoc);
+            if (distance < CLOSE_ENOUGH) {
+                return new Roam();
+            }
+            Direction dir = myLocation.directionTo(targetLoc);
+            if (!rc.hasMoved() && rc.canMove(dir)) {
+                rc.move(dir);
+                return this;
+            } else {
+                defaultMovement(awareness);
+                return this;
+            }
+        }
+    }
+
+    class Roam extends RobotState {
+        RobotState interrupt(Awareness awareness) throws GameActionException {
+            if (awareness.isBullets()) {
+                return new Evade(this);
+            } else if (awareness.isEnemy()) {
+                return new Attack();
+            } else if (awareness.hasOrders()) {
+                // TODO - better targeting
+                List<MapLocation> locs = awareness.getOrders();
+                return new MoveTo(locs.iterator().next());
             } else {
                 return this;
             }

@@ -79,29 +79,6 @@ abstract class ShootingRobot extends AggressiveRobot {
 //            }
 //        }
 //    }
-//
-//    class MoveTo implements RobotState {
-//        private MapLocation targetDir;
-//
-//        MoveTo(MapLocation order) {
-//            this.targetDir = order;
-//        }
-//
-//        @Override
-//        public RobotState act(Awareness awareness) throws GameActionException {
-//            MapLocation myLocation = rc.getLocation();
-//            Direction dir = myLocation.directionTo(targetDir);
-//            debug_outf("Trying to move in direction: %s", dir);
-//            if (rc.canMove(dir)) {
-//                debug_dir(myLocation, targetDir);
-//                rc.move(dir);
-//                return this;
-//            } else {
-//                defaultMovement(awareness);
-//                return new Roam();
-//            }
-//        }
-//    }
 
     // DEBUGGING
 
