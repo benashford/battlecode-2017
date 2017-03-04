@@ -103,7 +103,7 @@ public class Gardener extends PassiveRobot {
                 }
             }
 
-            if (trees.size() < numTrees) {
+            if (buildStack.isEmpty() && trees.size() < numTrees) {
                 plantRandomTree();
             } else {
                 build();

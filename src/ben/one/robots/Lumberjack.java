@@ -25,7 +25,7 @@ public class Lumberjack extends AggressiveRobot {
 
     @Override
     RobotState defaultState() {
-        throw new IllegalStateException("Not yet implemented");
+        return new Roam();
     }
 
     private <B extends BodyInfo> boolean inStrikingRange(MapLocation me, List<B> bodies) {

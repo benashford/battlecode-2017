@@ -24,18 +24,8 @@ public class Scout extends ShootingRobot {
 
     @Override
     RobotState defaultState() {
-        throw new IllegalStateException("Unimplemented");
+        return new Roam();
     }
-
-//    private class Roam implements RobotState {
-//        @Override
-//        public RobotState act(Awareness awareness) throws GameActionException {
-//            if (!rc.hasMoved()) {
-//                defaultMovement(awareness);
-//            }
-//            return this;
-//        }
-//    }
 
     static boolean shouldBuild(int buildCount, int roundNum, int limit) {
         return buildCount % 15 == 0;

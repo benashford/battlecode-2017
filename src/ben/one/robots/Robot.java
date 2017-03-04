@@ -49,8 +49,11 @@ abstract class Robot {
     }
 
     private void doTurn(Awareness awareness) throws GameActionException {
+        debug_outf("STARTING TURN! (state=%s)", state);
         state = orDefault(state.interrupt(awareness));
+        debug_outf("AFTER INTERRUPT! (state=%s)", state);
         state = orDefault(state.act(awareness));
+        debug_outf("AFTER ACT! (state=%s)", state);
         if (state == null) {
             state = defaultState();
         }
@@ -60,6 +63,7 @@ abstract class Robot {
         if (enemiesNearby) {
             broadcastEnemies(awareness.findEnemy());
         }
+        debug_outf("ENDING TURN! (state=%s)", state);
     }
 
     public final void run() throws GameActionException {
@@ -216,7 +220,7 @@ abstract class Robot {
 
         @Override
         public RobotState act(Awareness awareness) throws GameActionException {
-            if (rc.hasMoved()) {
+            if (!rc.hasMoved()) {
                 evadeBullets(awareness);
             }
             callWrappedState(awareness);

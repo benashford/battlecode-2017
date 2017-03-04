@@ -67,4 +67,22 @@ abstract class AggressiveRobot extends Robot {
             rc.move(targetDir);
         }
     }
+
+    class Roam extends RobotState {
+        RobotState interrupt(Awareness awareness) {
+            if (awareness.isBullets()) {
+                return new Evade(this);
+            } else {
+                return this;
+            }
+        }
+
+        @Override
+        RobotState act(Awareness awareness) throws GameActionException {
+            if (!rc.hasMoved()) {
+                defaultMovement(awareness);
+            }
+            return this;
+        }
+    }
 }

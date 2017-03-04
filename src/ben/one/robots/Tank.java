@@ -24,11 +24,11 @@ public class Tank extends ShootingRobot {
 
     @Override
     RobotState defaultState() {
-        throw new IllegalStateException("Unimplemented");
+        return new Roam();
     }
 
     static boolean shouldBuild(int buildCount, int round, int limit) {
-        return false;
-        //return buildCount % 10 == 0;
+        //return false;
+        return buildCount % 10 == 0;
     }
 }

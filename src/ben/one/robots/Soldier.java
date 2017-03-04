@@ -24,6 +24,6 @@ public class Soldier extends ShootingRobot {
 
     @Override
     RobotState defaultState() {
-        throw new IllegalStateException("Unimplemented");
+        return new Roam();
     }
 }
