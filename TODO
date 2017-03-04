@@ -1,4 +1,3 @@
-* Across-unit signalling
 * Get very close to enemy bots (Lumberjacks only)
 * Collatoral damage - target enemy trees, etc.
 * Re-enable Lumberjack
@@ -10,3 +9,5 @@
 * Make sure Lumberjacks stay a safe distance away from other friendly units/trees (when at war)
 * Better Tank strategy (too slow to evade bullets)
 * Implement swarming rather than co-ordination
+* Return fire first
+* Choose between aggressive and defensive options
