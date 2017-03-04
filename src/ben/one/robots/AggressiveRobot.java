@@ -17,6 +17,16 @@ abstract class AggressiveRobot extends Robot {
     // TODO: get rid of this by having a Lumberjack specific attack and a ShootingRobot specific attack state
     abstract void attackEnemy(Awareness awareness) throws GameActionException;
 
+    /**
+     * Allow each type of AggressiveRobot to have its own Roam
+     */
+    abstract RobotState buildRoamer();
+
+    @Override
+    RobotState defaultState() {
+        return buildRoamer();
+    }
+
     class Shoot extends RobotState {
         Shoot() {
             super();
@@ -123,11 +133,15 @@ abstract class AggressiveRobot extends Robot {
             this.targetLoc = order;
         }
 
+        RobotState onBullets() {
+            return new Evade(new Shoot(this));
+        }
+
         RobotState interrupt(Awareness awareness) {
-            if (awareness.isBullets()) {
-                return new Evade(new Shoot(this));
-            } else if (awareness.isEnemy()) {
+            if (awareness.isEnemy()) {
                 return new Attack(new Shoot());
+            } else if (awareness.isBullets()) {
+                return onBullets();
             } else {
                 return this;
             }
@@ -137,7 +151,7 @@ abstract class AggressiveRobot extends Robot {
             MapLocation myLocation = rc.getLocation();
             float distance = myLocation.distanceTo(targetLoc);
             if (distance < CLOSE_ENOUGH) {
-                return new Roam();
+                return buildRoamer();
             }
             Direction dir = myLocation.directionTo(targetLoc);
             if (!rc.hasMoved() && rc.canMove(dir)) {
@@ -160,15 +174,25 @@ abstract class AggressiveRobot extends Robot {
     }
 
     class Roam extends RobotState {
-        RobotState interrupt(Awareness awareness) throws GameActionException {
-            if (awareness.isBullets()) {
-                return new Evade(new Shoot());
-            } else if (awareness.isEnemy()) {
+        private Direction direction = randomDirection();
+
+        RobotState onBullets() {
+            return new Evade(new Shoot());
+        }
+
+        RobotState onOrder(MapLocation target) {
+            return new MoveTo(target);
+        }
+
+        final RobotState interrupt(Awareness awareness) throws GameActionException {
+            if (awareness.isEnemy()) {
                 return new Attack(new Shoot());
+            } else if (awareness.isBullets()) {
+                return onBullets();
             } else if (awareness.hasOrders()) {
                 // TODO - better targeting
                 List<MapLocation> locs = awareness.getOrders();
-                return new MoveTo(locs.iterator().next());
+                return onOrder(locs.iterator().next());
             } else {
                 return this;
             }
@@ -176,8 +200,15 @@ abstract class AggressiveRobot extends Robot {
 
         @Override
         RobotState act(Awareness awareness) throws GameActionException {
-            if (!rc.hasMoved()) {
-                defaultMovement(awareness);
+            if (!shakeTreeMovement(awareness)) {
+                if (!rc.hasMoved()) {
+                    if (rc.canMove(direction)) {
+                        rc.move(direction);
+                    } else {
+                        direction = randomDirection();
+                        defaultMovement(awareness);
+                    }
+                }
             }
             return this;
         }

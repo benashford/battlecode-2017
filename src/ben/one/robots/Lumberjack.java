@@ -23,11 +23,6 @@ public class Lumberjack extends AggressiveRobot {
         super(rc, ATTRACTIONS);
     }
 
-    @Override
-    RobotState defaultState() {
-        return new Roam();
-    }
-
     private <B extends BodyInfo> boolean inStrikingRange(MapLocation me, List<B> bodies) {
         for (B body : bodies) {
             MapLocation bodyLoc = body.getLocation();
@@ -82,6 +77,12 @@ public class Lumberjack extends AggressiveRobot {
         if (!rc.hasMoved()) {
             defaultMovement(awareness);
         }
+    }
+
+    RobotState buildRoamer() {
+        // TODO - construct Lumberjack specific Roamer - e.g. looking for trees to shake
+        // see chopTrees() function
+        throw new IllegalStateException("Unimplemented");
     }
 
     static boolean shouldBuild(int buildCount, int roundCount, int roundLimit) {

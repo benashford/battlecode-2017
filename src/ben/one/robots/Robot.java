@@ -90,23 +90,29 @@ abstract class Robot {
         }
     }
 
-    /**
-     * Default behaviour is to shake trees
-     */
-    void defaultMovement(Awareness awareness) throws GameActionException {
+    boolean shakeTreeMovement(Awareness awareness) throws GameActionException {
         TreeInfo tree = awareness.findNearestTreeWithBullets();
         if (tree != null) {
             if (rc.canInteractWithTree(tree.getID())) {
                 rc.shake(tree.getID());
-                return;
+                return true;
             } else {
                 if (!rc.hasMoved() && rc.canMove(tree.getLocation())) {
                     rc.move(tree.getLocation());
-                    return;
+                    return true;
                 }
             }
         }
-        randomMovement();
+        return false;
+    }
+
+    /**
+     * Default behaviour is to shake trees
+     */
+    void defaultMovement(Awareness awareness) throws GameActionException {
+        if (!shakeTreeMovement(awareness)) {
+            randomMovement();
+        }
     }
 
     private void broadcastEnemies(List<RobotInfo> enemies) throws GameActionException {

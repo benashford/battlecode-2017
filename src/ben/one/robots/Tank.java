@@ -1,5 +1,6 @@
 package ben.one.robots;
 
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 
@@ -23,12 +24,34 @@ public class Tank extends ShootingRobot {
     }
 
     @Override
-    RobotState defaultState() {
-        return new Roam();
+    RobotState buildRoamer() {
+        return new TankRoam();
     }
 
     static boolean shouldBuild(int buildCount, int round, int limit) {
         //return false;
-        return buildCount % 10 == 0;
+        return buildCount % 4 == 0;
+    }
+
+    class TankRoam extends Roam {
+        @Override
+        RobotState onBullets() {
+            return this;
+        }
+
+        RobotState onOrder(MapLocation target) {
+            return new TankMoveTo(target);
+        }
+    }
+
+    class TankMoveTo extends MoveTo {
+        TankMoveTo(MapLocation target) {
+            super(target);
+        }
+
+        @Override
+        RobotState onBullets() {
+            return this;
+        }
     }
 }

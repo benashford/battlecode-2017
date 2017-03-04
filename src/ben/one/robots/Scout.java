@@ -23,7 +23,7 @@ public class Scout extends ShootingRobot {
     }
 
     @Override
-    RobotState defaultState() {
+    RobotState buildRoamer() {
         return new Roam();
     }
 
