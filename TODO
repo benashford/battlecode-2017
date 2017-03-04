@@ -11,3 +11,4 @@
 * Implement swarming rather than co-ordination
 * Return fire first
 * Choose between aggressive and defensive options
+* Tanks to fire out-of sight range on say-so of other units
