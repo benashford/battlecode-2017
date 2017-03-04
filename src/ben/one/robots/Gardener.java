@@ -109,7 +109,7 @@ public class Gardener extends PassiveRobot {
                 build();
             }
             randomMovement();
-            
+
             return this;
         }
     }

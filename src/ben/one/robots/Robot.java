@@ -215,5 +215,9 @@ abstract class Robot {
             callWrappedState(awareness);
             return this;
         }
+
+        public String toString() {
+            return String.format("EVADE[wrappedState=%s]", wrappedState);
+        }
     }
 }

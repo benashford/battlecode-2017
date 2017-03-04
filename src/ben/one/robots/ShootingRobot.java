@@ -64,22 +64,6 @@ abstract class ShootingRobot extends AggressiveRobot {
         }
     }
 
-//    class Roam implements RobotState {
-//        @Override
-//        public RobotState act(Awareness awareness) throws GameActionException {
-//            if (!rc.hasMoved()) {
-//                defaultMovement(awareness);
-//            }
-//            MapLocation order = listenForOrders();
-//            if (order != null) {
-//                debug_outf("RECEIVED ORDER! %s", order);
-//                return new MoveTo(order);
-//            } else {
-//                return this;
-//            }
-//        }
-//    }
-
     // DEBUGGING
 
     void debug_spot(MapLocation location, int r, int g, int b) {

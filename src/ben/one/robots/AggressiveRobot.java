@@ -15,15 +15,8 @@ abstract class AggressiveRobot extends Robot {
         this.attractionTable = attractionTable;
     }
 
+    // TODO: get rid of this by having a Lumberjack specific attack and a ShootingRobot specific attack state
     abstract void attackEnemy(Awareness awareness) throws GameActionException;
-
-    void moveAndAttack(Awareness awareness) throws GameActionException {
-        if (!rc.hasMoved()) {
-            // Unit may have already moved to dodge bullets
-            moveAroundEnemy(awareness);
-        }
-        attackEnemy(awareness);
-    }
 
     private float calculateAttractionFactor(RobotInfo enemyBot) {
         // Attraction is a function of unit type and health
@@ -34,6 +27,10 @@ abstract class AggressiveRobot extends Robot {
     }
 
     private void moveAroundEnemy(Awareness awareness) throws GameActionException {
+        if (rc.hasMoved()) {
+            return;
+        }
+
         MapLocation pos = rc.getLocation();
         float nextX = pos.x;
         float nextY = pos.y;
@@ -67,7 +64,39 @@ abstract class AggressiveRobot extends Robot {
         }
     }
 
+    class Shoot extends RobotState {
+        Shoot() {
+            super();
+        }
+
+        Shoot(RobotState state) {
+            super(state);
+        }
+
+        RobotState interrupt(Awareness awareness) {
+            if (awareness.isEnemy()) {
+                return this;
+            } else {
+                return wrappedState;
+            }
+        }
+
+        RobotState act(Awareness awareness) throws GameActionException {
+            attackEnemy(awareness);
+            callWrappedState(awareness);
+            return this;
+        }
+
+        public String toString() {
+            return String.format("SHOOT[wrappedState=%s]", wrappedState);
+        }
+    }
+
     class Attack extends RobotState {
+        Attack(RobotState state) {
+            super(state);
+        }
+
         RobotState interrupt(Awareness awareness) {
             if (awareness.isDanger()) {
                 return this;
@@ -77,15 +106,19 @@ abstract class AggressiveRobot extends Robot {
         }
 
         RobotState act(Awareness awareness) throws GameActionException {
-            moveAndAttack(awareness);
+            moveAroundEnemy(awareness);
+            callWrappedState(awareness);
             return this;
         }
     }
 
     class MoveTo extends RobotState {
         private float CLOSE_ENOUGH = 0.5f;
+        private int MAXIMUM_STUCK_MOVES = 20;
 
         private MapLocation targetLoc;
+
+        private int stuckMoves = 0;
 
         MoveTo(MapLocation order) {
             this.targetLoc = order;
@@ -93,9 +126,9 @@ abstract class AggressiveRobot extends Robot {
 
         RobotState interrupt(Awareness awareness) {
             if (awareness.isBullets()) {
-                return new Evade(this);
+                return new Evade(new Shoot(this));
             } else if (awareness.isEnemy()) {
-                return new Attack();
+                return new Attack(new Shoot());
             } else {
                 return this;
             }
@@ -109,21 +142,30 @@ abstract class AggressiveRobot extends Robot {
             }
             Direction dir = myLocation.directionTo(targetLoc);
             if (!rc.hasMoved() && rc.canMove(dir)) {
+                stuckMoves = 0;
                 rc.move(dir);
                 return this;
             } else {
                 defaultMovement(awareness);
-                return this;
+                if (++stuckMoves >= MAXIMUM_STUCK_MOVES) {
+                    return null;
+                } else {
+                    return this;
+                }
             }
+        }
+
+        public String toString() {
+            return String.format("MOVETO[target=%s,stuckMoves=%d]", targetLoc, stuckMoves);
         }
     }
 
     class Roam extends RobotState {
         RobotState interrupt(Awareness awareness) throws GameActionException {
             if (awareness.isBullets()) {
-                return new Evade(this);
+                return new Evade(new Shoot());
             } else if (awareness.isEnemy()) {
-                return new Attack();
+                return new Attack(new Shoot());
             } else if (awareness.hasOrders()) {
                 // TODO - better targeting
                 List<MapLocation> locs = awareness.getOrders();
