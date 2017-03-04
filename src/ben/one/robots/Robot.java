@@ -86,7 +86,7 @@ abstract class Robot {
      */
     void randomMovement() throws GameActionException {
         Direction d = randomDirection();
-        if (rc.canMove(d)) {
+        if (!rc.hasMoved() && rc.canMove(d)) {
             rc.move(d);
         }
     }
@@ -101,7 +101,7 @@ abstract class Robot {
                 rc.shake(tree.getID());
                 return;
             } else {
-                if (rc.canMove(tree.getLocation())) {
+                if (!rc.hasMoved() && rc.canMove(tree.getLocation())) {
                     rc.move(tree.getLocation());
                     return;
                 }
@@ -152,7 +152,7 @@ abstract class Robot {
         MapLocation target = new MapLocation(nextX, nextY);
         rc.setIndicatorLine(myLocation, target, 70, 100, 255);
         Direction d = myLocation.directionTo(target);
-        if (myLocation.distanceTo(target) > 0.2f && rc.canMove(d)) {
+        if (myLocation.distanceTo(target) > 0.2f && !rc.hasMoved() && rc.canMove(d)) {
             rc.move(d);
         }
         broadcastBullets(bullets);

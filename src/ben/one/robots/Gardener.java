@@ -96,7 +96,7 @@ public class Gardener extends PassiveRobot {
                         }
                     } else {
                         MapLocation poorestTreeLocation = poorestTree.getLocation();
-                        if (rc.canMove(poorestTreeLocation)) {
+                        if (!rc.hasMoved() && rc.canMove(poorestTreeLocation)) {
                             rc.move(poorestTreeLocation);
                         }
                     }
@@ -108,9 +108,8 @@ public class Gardener extends PassiveRobot {
             } else {
                 build();
             }
-            if (!rc.hasMoved()) {
-                randomMovement();
-            }
+            randomMovement();
+            
             return this;
         }
     }
