@@ -1,4 +1,5 @@
 * Get very close to enemy bots (Lumberjacks only)
+* Roam in a specific direction, not random walking
 * Collatoral damage - target enemy trees, etc.
 * Re-enable Lumberjack
 * All other TODOs
@@ -13,3 +14,5 @@
 * Tanks to fire out-of sight range on say-so of other units
 * Tanks to avoid friendly trees
 * Units with greater visibility to stay out of reach of others
+* Avoid friendly fire
+* Shoot back against incoming fire
