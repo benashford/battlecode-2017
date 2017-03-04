@@ -1,9 +1,7 @@
 package ben.one.robots;
 
-import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
-import ben.one.Awareness;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,23 +20,22 @@ public class Scout extends ShootingRobot {
 
     public Scout(RobotController rc) {
         super(rc, ATTRACTIONS);
-        resetState();
     }
 
     @Override
-    void resetState() {
-        state = new Roam();
+    RobotState defaultState() {
+        throw new IllegalStateException("Unimplemented");
     }
 
-    private class Roam implements RobotState {
-        @Override
-        public RobotState act(Awareness awareness) throws GameActionException {
-            if (!rc.hasMoved()) {
-                defaultMovement(awareness);
-            }
-            return this;
-        }
-    }
+//    private class Roam implements RobotState {
+//        @Override
+//        public RobotState act(Awareness awareness) throws GameActionException {
+//            if (!rc.hasMoved()) {
+//                defaultMovement(awareness);
+//            }
+//            return this;
+//        }
+//    }
 
     static boolean shouldBuild(int buildCount, int roundNum, int limit) {
         return buildCount % 15 == 0;

@@ -21,23 +21,11 @@ public class Lumberjack extends AggressiveRobot {
 
     public Lumberjack(RobotController rc) {
         super(rc, ATTRACTIONS);
-        resetState();
     }
 
-    void resetState() {
-        state = new ChopTrees();
-    }
-
-    final void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-        }
-        if (awareness.isEnemy()) {
-            moveAndAttack(awareness);
-        }
-        if (!awareness.isDanger()) {
-            state = state.act(awareness);
-        }
+    @Override
+    RobotState defaultState() {
+        throw new IllegalStateException("Not yet implemented");
     }
 
     private <B extends BodyInfo> boolean inStrikingRange(MapLocation me, List<B> bodies) {
@@ -96,13 +84,14 @@ public class Lumberjack extends AggressiveRobot {
         }
     }
 
-    private class ChopTrees implements RobotState {
-        @Override
-        public RobotState act(Awareness awareness) throws GameActionException {
-            chopTrees(awareness);
-            return this;
-        }
-    }
+// TODO: pending state refactor
+//    private class ChopTrees implements RobotState {
+//        @Override
+//        public RobotState act(Awareness awareness) throws GameActionException {
+//            chopTrees(awareness);
+//            return this;
+//        }
+//    }
 
     static boolean shouldBuild(int buildCount, int roundCount, int roundLimit) {
         return false;

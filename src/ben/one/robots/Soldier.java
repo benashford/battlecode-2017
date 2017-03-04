@@ -20,11 +20,10 @@ public class Soldier extends ShootingRobot {
 
     public Soldier(RobotController rc) {
         super(rc, ATTRACTIONS);
-        resetState();
     }
 
     @Override
-    void resetState() {
-        state = new Roam();
+    RobotState defaultState() {
+        throw new IllegalStateException("Unimplemented");
     }
 }

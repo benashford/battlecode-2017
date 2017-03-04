@@ -12,13 +12,19 @@ public class Archon extends PassiveRobot {
 
     public Archon(RobotController rc) {
         super(rc);
-        state = new HireGardeners(DEFAULT_GARDENERS);
         broker = new ArchonMessageBroker(radio, orders);
     }
 
+    RobotState defaultState() {
+        return new Roamer();
+    }
+
     @Override
-    void doTurn(Awareness awareness) throws GameActionException {
-        super.doTurn(awareness);
+    RobotState initState() {
+        return new HireGardeners(DEFAULT_GARDENERS);
+    }
+
+    private void defaultActions() throws GameActionException {
         broker.brokerMessages();
         float bullets = rc.getTeamBullets();
         if (bullets > START_BUYING_VICTORY_POINTS) {
@@ -29,7 +35,7 @@ public class Archon extends PassiveRobot {
         }
     }
 
-    private class HireGardeners implements RobotState {
+    private class HireGardeners extends PassiveRobotState {
         private int gardenersToHire;
 
         HireGardeners(int numOfGardeners) {
@@ -44,6 +50,7 @@ public class Archon extends PassiveRobot {
             } else {
                 randomMovement();
             }
+            defaultActions();
             if (gardenersToHire == 0) {
                 return new Roamer();
             } else {
@@ -52,12 +59,13 @@ public class Archon extends PassiveRobot {
         }
     }
 
-    private class Roamer implements RobotState {
+    private class Roamer extends PassiveRobotState {
         private int turnCount = 0;
 
         @Override
         public RobotState act(Awareness awareness) throws GameActionException {
             defaultMovement(awareness);
+            defaultActions();
             turnCount++;
             if (turnCount < (rc.getRoundNum() / 2)) {
                 return this;

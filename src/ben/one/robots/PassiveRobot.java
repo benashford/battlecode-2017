@@ -1,6 +1,5 @@
 package ben.one.robots;
 
-import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import ben.one.Awareness;
 
@@ -9,15 +8,19 @@ abstract class PassiveRobot extends Robot {
         super(rc);
     }
 
-    void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-        } else if (awareness.isEnemy()) {
-            broadcastEnemies(awareness.findEnemy());
-            // TODO - runAway();
-            randomMovement();
-        } else {
-            state = state.act(awareness);
+    abstract class PassiveRobotState extends RobotState {
+        /**
+         * All passive states only work in peacetime
+         */
+        public RobotState interrupt(Awareness awareness) {
+            if (awareness.isBullets()) {
+                return new Evade(this);
+            }
+            if (awareness.isEnemy()) {
+                // TODO: runAway();
+                return this;
+            }
+            return this;
         }
     }
 }

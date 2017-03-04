@@ -14,22 +14,6 @@ abstract class ShootingRobot extends AggressiveRobot {
         super(rc, attractionTable);
     }
 
-    final void doTurn(Awareness awareness) throws GameActionException {
-        if (awareness.isBullets()) {
-            evadeBullets(awareness);
-            resetState();
-        }
-        if (awareness.isEnemy()) {
-            moveAndAttack(awareness);
-            resetState();
-        }
-        if (!awareness.isDanger()) {
-            state = state.act(awareness);
-        }
-    }
-
-    abstract void resetState();
-
     @Override
     void attackEnemy(Awareness awareness) throws GameActionException {
         MapLocation currentLocation = rc.getLocation();
@@ -80,44 +64,44 @@ abstract class ShootingRobot extends AggressiveRobot {
         }
     }
 
-    class Roam implements RobotState {
-        @Override
-        public RobotState act(Awareness awareness) throws GameActionException {
-            if (!rc.hasMoved()) {
-                defaultMovement(awareness);
-            }
-            MapLocation order = listenForOrders();
-            if (order != null) {
-                debug_outf("RECEIVED ORDER! %s", order);
-                return new MoveTo(order);
-            } else {
-                return this;
-            }
-        }
-    }
-
-    class MoveTo implements RobotState {
-        private MapLocation targetDir;
-
-        MoveTo(MapLocation order) {
-            this.targetDir = order;
-        }
-
-        @Override
-        public RobotState act(Awareness awareness) throws GameActionException {
-            MapLocation myLocation = rc.getLocation();
-            Direction dir = myLocation.directionTo(targetDir);
-            debug_outf("Trying to move in direction: %s", dir);
-            if (rc.canMove(dir)) {
-                debug_dir(myLocation, targetDir);
-                rc.move(dir);
-                return this;
-            } else {
-                defaultMovement(awareness);
-                return new Roam();
-            }
-        }
-    }
+//    class Roam implements RobotState {
+//        @Override
+//        public RobotState act(Awareness awareness) throws GameActionException {
+//            if (!rc.hasMoved()) {
+//                defaultMovement(awareness);
+//            }
+//            MapLocation order = listenForOrders();
+//            if (order != null) {
+//                debug_outf("RECEIVED ORDER! %s", order);
+//                return new MoveTo(order);
+//            } else {
+//                return this;
+//            }
+//        }
+//    }
+//
+//    class MoveTo implements RobotState {
+//        private MapLocation targetDir;
+//
+//        MoveTo(MapLocation order) {
+//            this.targetDir = order;
+//        }
+//
+//        @Override
+//        public RobotState act(Awareness awareness) throws GameActionException {
+//            MapLocation myLocation = rc.getLocation();
+//            Direction dir = myLocation.directionTo(targetDir);
+//            debug_outf("Trying to move in direction: %s", dir);
+//            if (rc.canMove(dir)) {
+//                debug_dir(myLocation, targetDir);
+//                rc.move(dir);
+//                return this;
+//            } else {
+//                defaultMovement(awareness);
+//                return new Roam();
+//            }
+//        }
+//    }
 
     // DEBUGGING
 

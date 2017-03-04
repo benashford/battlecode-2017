@@ -16,8 +16,11 @@ public class Gardener extends PassiveRobot {
 
     public Gardener(RobotController rc) {
         super(rc);
-        state = new Garden(NUM_TREES);
         buildStack.add(RobotType.SCOUT);
+    }
+
+    RobotState defaultState() {
+        return new Garden(NUM_TREES);
     }
 
     private void plantRandomTree() throws GameActionException {
@@ -62,7 +65,7 @@ public class Gardener extends PassiveRobot {
         }
     }
 
-    private class Garden implements RobotState {
+    private class Garden extends PassiveRobotState {
         private int numTrees;
 
         private Garden(int numTrees) {

@@ -34,9 +34,36 @@ abstract class Robot {
         rand = new Random();
     }
 
-    abstract void doTurn(Awareness awareness) throws GameActionException;
+    abstract RobotState defaultState();
+
+    RobotState initState() {
+        return defaultState();
+    }
+
+    private RobotState orDefault(RobotState state) {
+        if (state == null) {
+            return defaultState();
+        } else {
+            return state;
+        }
+    }
+
+    private void doTurn(Awareness awareness) throws GameActionException {
+        state = orDefault(state.interrupt(awareness));
+        state = orDefault(state.act(awareness));
+        if (state == null) {
+            state = defaultState();
+        }
+
+        // Do signalling
+        boolean enemiesNearby = awareness.isEnemy();
+        if (enemiesNearby) {
+            broadcastEnemies(awareness.findEnemy());
+        }
+    }
 
     public final void run() throws GameActionException {
+        state = initState();
         while (true) {
             doTurn(new Awareness(rc));
             Clock.yield();
@@ -79,6 +106,9 @@ abstract class Robot {
         randomMovement();
     }
 
+    /**
+     * TODO: move to the Evade state
+     */
     void evadeBullets(Awareness awareness) throws GameActionException {
         BulletInfo[] bullets = awareness.findBullets();
         MapLocation myLocation = rc.getLocation();
@@ -167,6 +197,30 @@ abstract class Robot {
             return pendingOrders.get(idx);
         } else {
             return null;
+        }
+    }
+
+    class Evade extends RobotState {
+        Evade(RobotState state) {
+            super(state);
+        }
+
+        @Override
+        public RobotState interrupt(Awareness awareness) {
+            if (!awareness.isBullets()) {
+                return wrappedState;
+            } else {
+                return this;
+            }
+        }
+
+        @Override
+        public RobotState act(Awareness awareness) throws GameActionException {
+            if (rc.hasMoved()) {
+                evadeBullets(awareness);
+            }
+            callWrappedState(awareness);
+            return this;
         }
     }
 }

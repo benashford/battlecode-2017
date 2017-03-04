@@ -20,12 +20,11 @@ public class Tank extends ShootingRobot {
 
     public Tank(RobotController rc) {
         super(rc, ATTRACTIONS);
-        resetState();
     }
 
     @Override
-    void resetState() {
-        state = new Roam();
+    RobotState defaultState() {
+        throw new IllegalStateException("Unimplemented");
     }
 
     static boolean shouldBuild(int buildCount, int round, int limit) {
