@@ -1,14 +1,15 @@
 * Get very close to enemy bots (Lumberjacks only)
 * Collatoral damage - target enemy trees, etc.
 * Re-enable Lumberjack
-* Re-enable Tank
 * All other TODOs
 * Gardeners to avoid planting trees in congested areas
 * Move gardeners away from other gardeners
 * Make sure Lumberjack attacks enemy trees first
 * Make sure Lumberjacks stay a safe distance away from other friendly units/trees (when at war)
-* Better Tank strategy (too slow to evade bullets)
+* Tanks to not evade bullets (too slow)
 * Implement swarming rather than co-ordination
 * Return fire first
 * Choose between aggressive and defensive options
 * Tanks to fire out-of sight range on say-so of other units
+* Tanks to avoid friendly trees
+* Units with greater visibility to stay out of reach of others
