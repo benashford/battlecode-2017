@@ -38,8 +38,7 @@ abstract class Robot {
 
     public final void run() throws GameActionException {
         while (true) {
-            Awareness awareness = new Awareness(rc);
-            doTurn(awareness);
+            doTurn(new Awareness(rc));
             Clock.yield();
         }
     }
@@ -51,6 +50,9 @@ abstract class Robot {
         return new Direction((float) Math.random() * 2 * (float) Math.PI);
     }
 
+    /**
+     * TODO: this shouldn't be required when everything else is done.
+     */
     void randomMovement() throws GameActionException {
         Direction d = randomDirection();
         if (rc.canMove(d)) {
