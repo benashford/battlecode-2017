@@ -169,16 +169,6 @@ public class Awareness {
         }
         return !orders.isEmpty();
     }
-//    public MapLocation listenForOrders() throws GameActionException {
-//        List<MapLocation> pendingOrders = orders.readOrders();
-//        int numOrders = pendingOrders.size();
-//        if (numOrders > 0) {
-//            int idx = rand.nextInt(numOrders);
-//            return pendingOrders.get(idx);
-//        } else {
-//            return null;
-//        }
-//    }
 
     // DEBUG
 

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static ben.one.Util.debug_outf;
+
 /**
  * Represents a 360 degree representation of robots
  *
@@ -95,13 +97,6 @@ public class Periscope {
         debug_outf("Found %d in the firing line", inFiringLine.size());
 
         return inFiringLine;
-    }
-
-    // DEBUG
-
-    // TODO: de-duplicate, there's a few of these
-    private void debug_outf(String pattern, Object... args) {
-        System.out.printf("%n***%n%s%n", String.format(pattern, args));
     }
 }
 

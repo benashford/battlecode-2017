@@ -16,7 +16,6 @@ abstract class Robot {
     /**
      * The maximum number of bullet sources to broadcast.
      */
-    private static final int MAX_BROADCAST_BULLETS = 2;
     private static final int MAX_BROADCAST_ENEMIES = 4;
 
     RobotController rc;
@@ -82,7 +81,7 @@ abstract class Robot {
     }
 
     /**
-     * TODO: this shouldn't be required when everything else is done.
+     * When all out of other ideas...
      */
     void randomMovement() throws GameActionException {
         Direction d = randomDirection();
@@ -110,73 +109,7 @@ abstract class Robot {
         randomMovement();
     }
 
-    /**
-     * TODO: move to the Evade state
-     */
-    void evadeBullets(Awareness awareness) throws GameActionException {
-        BulletInfo[] bullets = awareness.findBullets();
-        MapLocation myLocation = rc.getLocation();
-        RobotType type = rc.getType();
-        float radius = type.bodyRadius;
-        float bulletSenseRadius = type.bulletSightRadius;
-        float nextX = myLocation.x;
-        float nextY = myLocation.y;
-        for (BulletInfo bullet : bullets) {
-            MapLocation bulletLoc = bullet.getLocation();
-            Direction dirToMe = bulletLoc.directionTo(myLocation);
-            Direction bulletDir = bullet.getDir();
-            float angle = dirToMe.degreesBetween(bulletDir);
-            if (Math.abs(angle) >= 1f) {
-                continue;
-            }
-            float distance = myLocation.distanceTo(bulletLoc);
-            float missBy = distance * (float) Math.tan(angle);
-
-            if (Math.abs(missBy) < radius) {
-                debug_outf("Bullet %s, will hit, distance: %.2f", bullet, missBy);
-                float bulletSpeed = bullet.getSpeed();
-                float distanceNextTurn = Math.max(0, distance - bulletSpeed);
-                float escapeAngle = (float) ((Math.PI / 2.0) + ((distanceNextTurn / bulletSenseRadius) * (Math.PI / 4.0)));
-                float angleModifier = 1f;
-                if (angle < 0) {
-                    angleModifier = -1f;
-                }
-                MapLocation target = myLocation.add(bulletDir.rotateLeftRads(escapeAngle * angleModifier), radius * bullet.getDamage());
-                float diffX = nextX - target.x;
-                float diffY = nextY - target.y;
-                nextX += diffX;
-                nextY += diffY;
-                rc.setIndicatorLine(myLocation, myLocation.add(dirToMe.rotateLeftDegrees(90f * angleModifier), radius), 0, 255, 127);
-            }
-        }
-        MapLocation target = new MapLocation(nextX, nextY);
-        rc.setIndicatorLine(myLocation, target, 70, 100, 255);
-        Direction d = myLocation.directionTo(target);
-        if (myLocation.distanceTo(target) > 0.2f && !rc.hasMoved() && rc.canMove(d)) {
-            rc.move(d);
-        }
-        broadcastBullets(bullets);
-    }
-
-    void broadcastBullets(BulletInfo[] bullets) throws GameActionException {
-        // TODO - re-enable this later
-//        int numBullets = bullets.length;
-//        if (numBullets <= MAX_BROADCAST_BULLETS) {
-//            for (BulletInfo bullet : bullets) {
-//                MapLocation source = bullet.getLocation();
-//                radio.broadcastBullet(source);
-//            }
-//        } else {
-//            List<BulletInfo> shuffleableBullets = new ArrayList<>(Arrays.asList(bullets));
-//            Collections.shuffle(shuffleableBullets);
-//            for (int i = 0; i < MAX_BROADCAST_BULLETS; i++) {
-//                BulletInfo bullet = shuffleableBullets.get(i);
-//                radio.broadcastBullet(bullet.getLocation());
-//            }
-//        }
-    }
-
-    void broadcastEnemies(List<RobotInfo> enemies) throws GameActionException {
+    private void broadcastEnemies(List<RobotInfo> enemies) throws GameActionException {
         int numEnemies = enemies.size();
         if (numEnemies <= MAX_BROADCAST_ENEMIES) {
             for (RobotInfo enemy : enemies) {
@@ -214,6 +147,50 @@ abstract class Robot {
             }
             callWrappedState(awareness);
             return this;
+        }
+
+        void evadeBullets(Awareness awareness) throws GameActionException {
+            BulletInfo[] bullets = awareness.findBullets();
+            MapLocation myLocation = rc.getLocation();
+            RobotType type = rc.getType();
+            float radius = type.bodyRadius;
+            float bulletSenseRadius = type.bulletSightRadius;
+            float nextX = myLocation.x;
+            float nextY = myLocation.y;
+            for (BulletInfo bullet : bullets) {
+                MapLocation bulletLoc = bullet.getLocation();
+                Direction dirToMe = bulletLoc.directionTo(myLocation);
+                Direction bulletDir = bullet.getDir();
+                float angle = dirToMe.degreesBetween(bulletDir);
+                if (Math.abs(angle) >= 1f) {
+                    continue;
+                }
+                float distance = myLocation.distanceTo(bulletLoc);
+                float missBy = distance * (float) Math.tan(angle);
+
+                if (Math.abs(missBy) < radius) {
+                    debug_outf("Bullet %s, will hit, distance: %.2f", bullet, missBy);
+                    float bulletSpeed = bullet.getSpeed();
+                    float distanceNextTurn = Math.max(0, distance - bulletSpeed);
+                    float escapeAngle = (float) ((Math.PI / 2.0) + ((distanceNextTurn / bulletSenseRadius) * (Math.PI / 4.0)));
+                    float angleModifier = 1f;
+                    if (angle < 0) {
+                        angleModifier = -1f;
+                    }
+                    MapLocation target = myLocation.add(bulletDir.rotateLeftRads(escapeAngle * angleModifier), radius * bullet.getDamage());
+                    float diffX = nextX - target.x;
+                    float diffY = nextY - target.y;
+                    nextX += diffX;
+                    nextY += diffY;
+                    rc.setIndicatorLine(myLocation, myLocation.add(dirToMe.rotateLeftDegrees(90f * angleModifier), radius), 0, 255, 127);
+                }
+            }
+            MapLocation target = new MapLocation(nextX, nextY);
+            rc.setIndicatorLine(myLocation, target, 70, 100, 255);
+            Direction d = myLocation.directionTo(target);
+            if (myLocation.distanceTo(target) > 0.2f && !rc.hasMoved() && rc.canMove(d)) {
+                rc.move(d);
+            }
         }
 
         public String toString() {

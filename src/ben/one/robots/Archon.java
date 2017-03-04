@@ -24,6 +24,9 @@ public class Archon extends PassiveRobot {
         return new HireGardeners(DEFAULT_GARDENERS);
     }
 
+    /**
+     * Will be performed once-per-turn by all states
+     */
     private void defaultActions() throws GameActionException {
         broker.brokerMessages();
         float bullets = rc.getTeamBullets();

@@ -84,15 +84,6 @@ public class Lumberjack extends AggressiveRobot {
         }
     }
 
-// TODO: pending state refactor
-//    private class ChopTrees implements RobotState {
-//        @Override
-//        public RobotState act(Awareness awareness) throws GameActionException {
-//            chopTrees(awareness);
-//            return this;
-//        }
-//    }
-
     static boolean shouldBuild(int buildCount, int roundCount, int roundLimit) {
         return false;
 //        if (roundCount > (roundLimit / 2)) {
