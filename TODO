@@ -1,5 +1,5 @@
-* More efficient gardeners
 * Re-test/debug friendly fire code
+* Stop tanks mowing down friendly trees
 * Get very close to enemy bots (Lumberjacks only)
 * Tanks to avoid trees if at all possible
 * Collatoral damage - target enemy trees, etc.
@@ -9,12 +9,8 @@
 * Move gardeners away from other gardeners
 * Make sure Lumberjack attacks enemy trees first
 * Make sure Lumberjacks stay a safe distance away from other friendly units/trees (when at war)
-* Tanks to not evade bullets (too slow)
 * Implement swarming rather than co-ordination
-* Return fire first
 * Choose between aggressive and defensive options
 * Tanks to fire out-of sight range on say-so of other units
-* Tanks to avoid friendly trees
 * Units with greater visibility to stay out of reach of others
-* Avoid friendly fire
 * Shoot back against incoming fire
