@@ -1,3 +1,5 @@
+* More efficient gardeners
+* Re-test/debug friendly fire code
 * Get very close to enemy bots (Lumberjacks only)
 * Tanks to avoid trees if at all possible
 * Collatoral damage - target enemy trees, etc.
