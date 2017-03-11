@@ -68,38 +68,44 @@ public class Gardener extends PassiveRobot {
     }
 
     private final MapLocation locationAtPosition(float offset, int idx) {
-        float angle = offset + (((float)Math.PI / 3f) * idx);
-        return rc.getLocation().add(angle, rc.getType().bodyRadius + BULLET_TREE_RADIUS);
+        float angle = offset + (((float)Math.PI / 3f) * idx + 0.0f);
+        return rc.getLocation().add(angle, rc.getType().bodyRadius + 0.01f + BULLET_TREE_RADIUS);
     }
 
     private class FindSpace extends PassiveRobotState {
-        private float offset = 0f;
+        private float offset = (float)(Math.random() * 2 * Math.PI);
+        private float direction = (float)(Math.random() * 2 * Math.PI);
 
         private boolean isInSpace() throws GameActionException {
+            boolean isSpace = true;
             for (int i = 0; i < 6; i++) {
                 MapLocation loc = locationAtPosition(offset, i);
                 if (rc.isCircleOccupied(loc, BULLET_TREE_RADIUS)) {
                     debug_spot(loc, 255, 0, 0);
-                    return false;
+                    isSpace = false;
                 } else {
-                    if (rc.isBuildReady()) {
-                        build(rc.getLocation().directionTo(loc));
-                    }
-                    debug_spot(loc, 0, 255, 0);
+                    debug_spot(loc, 127, 255, 63);
                 }
             }
-            return true;
+            return isSpace;
         }
 
         public RobotState act(Awareness awareness) throws GameActionException {
-            if (isInSpace()) {
+            if (isInSpace() && awareness.findFriendTrees().isEmpty()) {
+                debug_outf("Found space, beginning to garden");
                 return new Garden(offset);
             } else {
-                offset += Math.random();
-                // TODO: find direction
-                randomMovement();
-                return this;
+                if (!rc.hasMoved()) {
+                    MapLocation loc = rc.getLocation().add(direction);
+                    if (rc.canMove(loc)) {
+                        rc.move(loc);
+                    } else {
+                        direction = (float) (Math.random() * 2 * Math.PI);
+                    }
+                }
+                offset += (float)(Math.random() * (Math.PI / 6));
             }
+            return this;
         }
     }
 
@@ -112,44 +118,21 @@ public class Gardener extends PassiveRobot {
         }
 
         public RobotState act(Awareness awareness) throws GameActionException {
-            List<TreeInfo> trees = awareness.findFriendTrees();
-
-            if (!trees.isEmpty()) {
-                TreeInfo poorestTree = null;
-                float poorestTreeHealth = 100f;
-
-                for (TreeInfo tree : trees) {
-                    int treeId = tree.getID();
-                    if (!rc.canInteractWithTree(treeId)) {
-                        continue;
-                    }
-                    float treeHealth = tree.getHealth() / tree.getMaxHealth();
-                    if (treeHealth < poorestTreeHealth) {
-                        poorestTree = tree;
-                        poorestTreeHealth = treeHealth;
-                    }
-                }
-
-                if (poorestTreeHealth < 0.99f) {
-                    int poorestTreeId = poorestTree.getID();
-                    if (rc.canWater(poorestTreeId)) {
-                        rc.water(poorestTreeId);
-                    }
-                }
-            }
-
+            int trees = awareness.findFriendTrees().size();
             for (int i = 0; i < 6; i++) {
-                MapLocation loc = locationAtPosition(offset, (rota += i) % 6);
+                MapLocation loc = locationAtPosition(offset, (rota += 1) % 6);
+                if (rc.canInteractWithTree(loc)) {
+                    if (rc.canWater(loc)) {
+                        debug_spot(loc, 0, 0, 255);
+                        rc.water(loc);
+                        break;
+                    }
+                }
                 if (rc.isCircleOccupied(loc, BULLET_TREE_RADIUS)) {
                     continue;
                 }
-                if (rc.canInteractWithTree(loc) && rc.canWater(loc)) {
-                    debug_spot(loc, 0, 0, 255);
-                    rc.water(loc);
-                    break;
-                }
                 Direction d = rc.getLocation().directionTo(loc);
-                if (trees.size() < 6 && rc.getTeamBullets() < 800) {
+                if (trees < 5 && rc.getTeamBullets() < 800) {
                     if (rc.canPlantTree(d)) {
                         rc.plantTree(d);
                     }
