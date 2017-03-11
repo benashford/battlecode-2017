@@ -132,6 +132,10 @@ abstract class Robot {
         }
     }
 
+    void debug_spot(MapLocation location, int r, int g, int b) {
+        rc.setIndicatorDot(location, r, g, b);
+    }
+
     class Evade extends RobotState {
         Evade(RobotState state) {
             super(state);

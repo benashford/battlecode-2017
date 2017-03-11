@@ -66,10 +66,6 @@ abstract class ShootingRobot extends AggressiveRobot {
 
     // DEBUGGING
 
-    void debug_spot(MapLocation location, int r, int g, int b) {
-        rc.setIndicatorDot(location, r, g, b);
-    }
-
     void debug_shot(MapLocation location, MapLocation otherLocation) {
         rc.setIndicatorLine(location, otherLocation, 255, 153, 0);
     }

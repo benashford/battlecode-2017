@@ -6,6 +6,9 @@ import ben.one.comms.ArchonMessageBroker;
 
 public class Archon extends PassiveRobot {
     private static final int START_BUYING_VICTORY_POINTS = 1000;
+
+    // TODO: revisit this, temporary bodge to force Archon's to produce as many Gardeners as possible
+    // but only until they're fired upon.
     private static final int DEFAULT_GARDENERS = 2;
 
     private ArchonMessageBroker broker;
@@ -51,7 +54,7 @@ public class Archon extends PassiveRobot {
                 rc.hireGardener(d2);
                 gardenersToHire--;
             } else {
-                randomMovement();
+                defaultMovement(awareness);
             }
             defaultActions();
             if (gardenersToHire == 0) {
@@ -70,7 +73,7 @@ public class Archon extends PassiveRobot {
             defaultMovement(awareness);
             defaultActions();
             turnCount++;
-            if (turnCount < (rc.getRoundNum() / 2)) {
+            if (turnCount < (rc.getRoundNum() / 50)) {
                 return this;
             } else {
                 return new HireGardeners(1);
