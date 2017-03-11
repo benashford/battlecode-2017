@@ -7,6 +7,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+import static ben.one.Util.debug_outf;
+
 public class Gardener extends PassiveRobot {
     private static final int NUM_TREES = 4;
 
@@ -21,13 +23,6 @@ public class Gardener extends PassiveRobot {
 
     RobotState defaultState() {
         return new Garden(NUM_TREES);
-    }
-
-    private void plantRandomTree() throws GameActionException {
-        Direction d = randomDirection();
-        if (rc.canPlantTree(d)) {
-            rc.plantTree(d);
-        }
     }
 
     private RobotType nextBuildType() {
@@ -53,8 +48,7 @@ public class Gardener extends PassiveRobot {
         }
     }
 
-    private void build() throws GameActionException {
-        Direction d = randomDirection();
+    private void build(Direction d) throws GameActionException {
         RobotType type = nextBuildType();
         if (rc.canBuildRobot(type, d)) {
             rc.buildRobot(type, d);
@@ -62,14 +56,24 @@ public class Gardener extends PassiveRobot {
                 buildStack.removeLast();
             }
             doneBuild();
+        } else {
+            debug_outf("Cannot build Robot of Type: %s", type);
         }
     }
 
+    // DEPRECATE ME - too random and inefficient
     private class Garden extends PassiveRobotState {
         private int numTrees;
 
         private Garden(int numTrees) {
             this.numTrees = numTrees;
+        }
+
+        private void plantRandomTree() throws GameActionException {
+            Direction d = randomDirection();
+            if (rc.canPlantTree(d)) {
+                rc.plantTree(d);
+            }
         }
 
         @Override
@@ -106,7 +110,8 @@ public class Gardener extends PassiveRobot {
             if (buildStack.isEmpty() && trees.size() < numTrees) {
                 plantRandomTree();
             } else {
-                build();
+                Direction d = randomDirection();
+                build(d);
             }
             randomMovement();
 
