@@ -1,10 +1,10 @@
 package ben.one.robots;
 
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotType;
+import battlecode.common.*;
+import ben.one.Awareness;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Tank extends ShootingRobot {
@@ -52,6 +52,33 @@ public class Tank extends ShootingRobot {
         @Override
         RobotState onBullets() {
             return this;
+        }
+
+        /**
+         * By default tanks will roll-over trees, try and avoid friendly trees where possible
+         */
+        @Override
+        boolean canMove(Awareness awareness, Direction dir) {
+            if (!super.canMove(awareness, dir)) {
+                return false;
+            }
+
+            List<TreeInfo> friendlyTrees = awareness.findFriendTrees();
+            if (friendlyTrees.isEmpty()) {
+                return true;
+            }
+            MapLocation currentLocation = rc.getLocation();
+            RobotType tankType = rc.getType();
+            MapLocation targetLocation = currentLocation.add(dir, tankType.strideRadius);
+            float tankRadius = tankType.bodyRadius;
+
+            for (TreeInfo tree : friendlyTrees) {
+                float distance = targetLocation.distanceTo(tree.getLocation());
+                if (distance < tankRadius + tree.getRadius()) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

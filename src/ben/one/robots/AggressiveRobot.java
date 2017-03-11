@@ -147,6 +147,10 @@ abstract class AggressiveRobot extends Robot {
             }
         }
 
+        boolean canMove(Awareness awareness, Direction dir) {
+            return rc.canMove(dir);
+        }
+
         RobotState act(Awareness awareness) throws GameActionException {
             MapLocation myLocation = rc.getLocation();
             float distance = myLocation.distanceTo(targetLoc);
@@ -154,7 +158,7 @@ abstract class AggressiveRobot extends Robot {
                 return buildRoamer();
             }
             Direction dir = myLocation.directionTo(targetLoc);
-            if (!rc.hasMoved() && rc.canMove(dir)) {
+            if (!rc.hasMoved() && canMove(awareness, dir)) {
                 stuckMoves = 0;
                 rc.move(dir);
                 return this;
