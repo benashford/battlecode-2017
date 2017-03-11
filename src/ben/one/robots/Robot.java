@@ -136,6 +136,10 @@ abstract class Robot {
         rc.setIndicatorDot(location, r, g, b);
     }
 
+    void debug_point_angle(float angle, int r, int g, int b) {
+        rc.setIndicatorLine(rc.getLocation(), rc.getLocation().add(angle, 2f), r, g, b);
+    }
+
     class Evade extends RobotState {
         Evade(RobotState state) {
             super(state);
