@@ -84,6 +84,9 @@ public class Gardener extends PassiveRobot {
                     debug_spot(loc, 255, 0, 0);
                     isSpace = false;
                 } else {
+                    if (rc.isBuildReady()) {
+                        build(rc.getLocation().directionTo(loc));
+                    }
                     debug_spot(loc, 127, 255, 63);
                 }
             }
@@ -120,12 +123,11 @@ public class Gardener extends PassiveRobot {
         public RobotState act(Awareness awareness) throws GameActionException {
             int trees = awareness.findFriendTrees().size();
             for (int i = 0; i < 6; i++) {
-                MapLocation loc = locationAtPosition(offset, (rota += 1) % 6);
+                MapLocation loc = locationAtPosition(offset, (i + rota) % 6);
                 if (rc.canInteractWithTree(loc)) {
                     if (rc.canWater(loc)) {
                         debug_spot(loc, 0, 0, 255);
                         rc.water(loc);
-                        break;
                     }
                 }
                 if (rc.isCircleOccupied(loc, BULLET_TREE_RADIUS)) {
@@ -142,6 +144,7 @@ public class Gardener extends PassiveRobot {
                     break;
                 }
             }
+            rota += 1;
             return this;
         }
     }
