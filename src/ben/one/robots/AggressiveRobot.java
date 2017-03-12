@@ -104,15 +104,11 @@ abstract class AggressiveRobot extends Robot {
 
                 MapLocation targetPos = pos.add(dir, attractionFactor);
 
-                rc.setIndicatorLine(pos, targetPos, 0, 255, 100);
-
                 nextX -= pos.x - targetPos.x;
                 nextY -= pos.y - targetPos.y;
             }
 
             MapLocation target = new MapLocation(nextX, nextY);
-
-            rc.setIndicatorLine(pos, target, 0, 100, 255);
 
             Direction targetDir = pos.directionTo(target);
             if (targetDir != null && rc.canMove(targetDir)) {
@@ -140,7 +136,7 @@ abstract class AggressiveRobot extends Robot {
         RobotState interrupt(Awareness awareness) {
             if (awareness.isEnemy()) {
                 return new Attack(new Shoot());
-            } else if (awareness.isBullets()) {
+            } else if (awareness.isDangerousBullets()) {
                 return onBullets();
             } else {
                 return this;
@@ -191,7 +187,7 @@ abstract class AggressiveRobot extends Robot {
         final RobotState interrupt(Awareness awareness) throws GameActionException {
             if (awareness.isEnemy()) {
                 return new Attack(new Shoot());
-            } else if (awareness.isBullets()) {
+            } else if (awareness.isDangerousBullets()) {
                 return onBullets();
             } else if (awareness.hasOrders()) {
                 // TODO - better targeting

@@ -107,8 +107,37 @@ public class Awareness {
         return bullets;
     }
 
+    /**
+     * Like findBullets, but only includes those that are nearby or heading in my direction.
+     */
+    public List<BulletInfo> findDangerousBullets() {
+        float myRadius = rc.getType().bodyRadius;
+        MapLocation myLocation = rc.getLocation();
+        BulletInfo[] allBullets = findBullets();
+        List<BulletInfo> bullets = new ArrayList<>();
+        for (BulletInfo bullet : allBullets) {
+            MapLocation bulletLoc = bullet.getLocation();
+            float distance = myLocation.distanceTo(bulletLoc);
+            if (distance < myRadius * 2f) {
+                bullets.add(bullet);
+                continue;
+            }
+            Direction meToBullet = bulletLoc.directionTo(myLocation);
+            float approachAngle = meToBullet.degreesBetween(bullet.getDir());
+            if (Math.abs(approachAngle) < (Math.PI / 3.0)) {
+                bullets.add(bullet);
+                continue;
+            }
+        }
+        return bullets;
+    }
+
     public boolean isBullets() {
         return findBullets().length > 0;
+    }
+
+    public boolean isDangerousBullets() {
+        return !findDangerousBullets().isEmpty();
     }
 
     private void processRobots() {
@@ -149,7 +178,7 @@ public class Awareness {
     }
 
     public boolean isDanger() {
-        return isBullets() || isEnemy();
+        return isDangerousBullets() || isEnemy();
     }
 
     private void processOrders() throws GameActionException {

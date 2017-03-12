@@ -13,7 +13,7 @@ abstract class PassiveRobot extends Robot {
          * All passive states only work in peacetime
          */
         public RobotState interrupt(Awareness awareness) {
-            if (awareness.isBullets()) {
+            if (awareness.isDangerousBullets()) {
                 return new Evade(this);
             }
             if (awareness.isEnemy()) {

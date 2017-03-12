@@ -56,21 +56,10 @@ abstract class ShootingRobot extends AggressiveRobot {
                 }
             }
             if (!rc.hasAttacked() && rc.canFireSingleShot()) {
-                debug_shot(currentLocation, enemyLocation);
                 rc.fireSingleShot(enemyDirection);
                 debug_outf("Fired in: %s", enemyDirection);
                 break;
             }
         }
-    }
-
-    // DEBUGGING
-
-    void debug_shot(MapLocation location, MapLocation otherLocation) {
-        rc.setIndicatorLine(location, otherLocation, 255, 153, 0);
-    }
-
-    void debug_dir(MapLocation start, MapLocation end) {
-        rc.setIndicatorLine(start, end, 127, 127, 127);
     }
 }
