@@ -28,10 +28,10 @@ abstract class ShootingRobot extends AggressiveRobot {
                 MapLocation friendLocation = friend.getLocation();
                 float friendDistance = currentLocation.distanceTo(friendLocation);
                 Direction friendDirection = currentLocation.directionTo(friendLocation);
-                float angle = enemyDirection.degreesBetween(friendDirection);
+                float angle = enemyDirection.radiansBetween(friendDirection);
                 float missBy = friendDistance * (float)Math.sin(angle);
                 if (Math.abs(missBy) < friend.getRadius()) {
-                    debug_outf("Not firing at %s, due to location of %s, missBy: %.2f", enemyBot, friend, missBy);
+                    debug_outf("Not firing at %s, due to location of %s, missBy: %.2f, distance: %.2f, angle: %.2f", enemyBot, friend, missBy, friendDistance, angle);
                     debug_spot(friendLocation, 127, 0, 0);
                     continue enemyIter;
                 } else {

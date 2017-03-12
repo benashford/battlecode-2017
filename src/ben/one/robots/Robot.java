@@ -171,7 +171,7 @@ abstract class Robot {
                 MapLocation bulletLoc = bullet.getLocation();
                 Direction dirToMe = bulletLoc.directionTo(myLocation);
                 Direction bulletDir = bullet.getDir();
-                float angle = dirToMe.degreesBetween(bulletDir);
+                float angle = dirToMe.radiansBetween(bulletDir);
                 if (Math.abs(angle) >= 1f) {
                     continue;
                 }
