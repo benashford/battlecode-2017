@@ -73,7 +73,7 @@ public class Archon extends PassiveRobot {
             defaultMovement(awareness);
             defaultActions();
             turnCount++;
-            if (turnCount < (rc.getRoundNum() / 50)) {
+            if (turnCount < 50 + (rc.getRoundNum() / 50)) {
                 return this;
             } else {
                 return new HireGardeners(1);

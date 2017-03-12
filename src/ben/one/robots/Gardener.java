@@ -5,7 +5,6 @@ import ben.one.Awareness;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 
 import static battlecode.common.GameConstants.BULLET_TREE_RADIUS;
 import static ben.one.Util.debug_outf;
@@ -17,6 +16,7 @@ public class Gardener extends PassiveRobot {
 
     public Gardener(RobotController rc) {
         super(rc);
+        buildStack.add(RobotType.SCOUT);
         buildStack.add(RobotType.SOLDIER);
     }
 
@@ -134,7 +134,8 @@ public class Gardener extends PassiveRobot {
                     continue;
                 }
                 Direction d = rc.getLocation().directionTo(loc);
-                if (trees < 5 && rc.getTeamBullets() < 800) {
+                int cutOff = rand.nextInt(1000);
+                if (trees < 5 && rc.getTeamBullets() < cutOff) {
                     if (rc.canPlantTree(d)) {
                         rc.plantTree(d);
                     }

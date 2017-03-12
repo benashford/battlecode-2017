@@ -24,7 +24,7 @@ abstract class Robot {
     ShipToShore radio;
     ShoreToShip orders;
 
-    private Random rand;
+    Random rand;
 
     Robot(RobotController rc) {
         this.rc = rc;
